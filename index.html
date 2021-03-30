@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap" rel="stylesheet"> 
+<title>Lancer de dés</title>
+<style>
+html,body{
+height:100%;
+margin:0;
+text-align:center;
+}
+#div1{
+display:inline-block;
+border:1px solid black;
+width:300px;
+height:150px;
+font-family:'Bungee Inline', cursive;
+font-size:100px;
+}
+#div2{
+display:inline-block;
+border:1px solid black;
+width:300px;
+height:150px;
+font-family:'Bungee Inline', cursive;
+font-size:100px;
+}
+</style>
+</head>
+<body>
+<div id="div1"></div>&nbsp;<div id="div2"></div>
+<br><br>
+<button id="lancer">Lancer</button><br><br>
+<svg width="95%" height="600px" viewbox="0 0 160 90" style="border:1px solid black;">
+<rect x="0" y="0" width="160" height="90" fill="royalblue"/>
+<!--<line x1="0" y1="45" x2="160" y2="45" stroke="black" stroke-width="90px" stroke-dasharray="1 9"/>-->
+<line x1="0" y1="30" x2="160" y2="30" stroke="black" stroke-width="0.5px"/>
+<line x1="0" y1="30" x2="160" y2="30" stroke="black" stroke-width="5px" stroke-dasharray="0.25 12" stroke-linecap="round"/>
+<line x1="0" y1="30" x2="160" y2="30" stroke="white" stroke-width="2.5px" stroke-dasharray="0.25 12" stroke-linecap="round"/>
+
+
+<line x1="0" y1="60" x2="160" y2="60" stroke="black" stroke-width="0.5px"/>
+</svg>
+<script>
+var div1=document.getElementById("div1");
+var div2=document.getElementById("div2");
+var lancer=document.getElementById("lancer");
+function lanc(){
+div1.innerHTML=Math.round(Math.random()*5)+1;
+div2.innerHTML=Math.round(Math.random()*5)+1;
+}
+lancer.addEventListener("click",lanc);
+</script>
+</body>
+</html>

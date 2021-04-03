@@ -1,57 +1,208 @@
 <!doctype html>
-<html lang="fr">
+<html>
 <head>
 <meta charset="utf-8">
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Bungee+Inline&display=swap" rel="stylesheet"> 
-<title>Lancer de dés</title>
+<title>The Duel</title>
+<link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a6/Trophy_Flat_Icon.svg" type="image/svg+xml"> 
 <style>
 html,body{
 height:100%;
-margin:0;
+}
+body{
+font-family:consolas,sans;
 text-align:center;
+overflow:hidden;
+background-color:lightgrey;
 }
-#div1{
-display:inline-block;
+table{
+width:500px;
+margin-left:auto;
+margin-right:auto;
+background-color:whitesmoke;
+}
+table,td{
+padding:10px;
+border:1px solid grey;
+border-collapse:collapse;
+}
+svg{
+width:500px;
+height:500px;
 border:1px solid black;
-width:300px;
-height:150px;
-font-family:'Bungee Inline', cursive;
-font-size:100px;
 }
-#div2{
-display:inline-block;
-border:1px solid black;
-width:300px;
-height:150px;
-font-family:'Bungee Inline', cursive;
-font-size:100px;
+#tdp1{
+font-weight:bold;
+color:royalblue;
 }
+#tdp2{
+font-weight:bold;
+color:crimson;
+}
+#bp1{
+opacity:1;
+transition:1s;
+}
+#bp2{
+opacity:0.25;
+transition:1s;
+}
+#g1{
+transition:2s;
+}
+#g2{
+transition:2s;
+}
+
 </style>
 </head>
+
 <body>
-<div id="div1"></div>&nbsp;<div id="div2"></div>
-<br><br>
-<button id="lancer">Lancer</button><br><br>
-<svg width="95%" height="600px" viewbox="0 0 160 90" style="border:1px solid black;">
-<rect x="0" y="0" width="160" height="90" fill="royalblue"/>
-<!--<line x1="0" y1="45" x2="160" y2="45" stroke="black" stroke-width="90px" stroke-dasharray="1 9"/>-->
-<line x1="0" y1="30" x2="160" y2="30" stroke="black" stroke-width="0.5px"/>
-<line x1="0" y1="30" x2="160" y2="30" stroke="black" stroke-width="5px" stroke-dasharray="0.25 12" stroke-linecap="round"/>
-<line x1="0" y1="30" x2="160" y2="30" stroke="white" stroke-width="2.5px" stroke-dasharray="0.25 12" stroke-linecap="round"/>
+<h1>The Duel</h1>
+<table class="center">
+<tbody>
+<tr>
+<td id="tdi1"><img id="ip1" src="p1.png" width="100px" height="auto"/></td>
+<td id="tdi2"><img id="ip2" src="p2.png" width="100px" height="auto"/></td>
+</tr>
+<tr>
+<td id="tdp1"><div contenteditable id="divp1">Player1</div></td>
+<td id="tdp2"><div contenteditable id="divp2">Player2</div></td>
+</tr>
+<tr>
+<td id="rp1">-</td>
+<td id="rp2">-</td>
+</tr>
+<tr>
+<td><button id="bp1">Roll</button></td>
+<td><button id="bp2">Roll</button></td>
+</tr>
+<tr>
+<td id="pos1">0/80</td>
+<td id="pos2">0/80</td>
+</tr>
+<tr>
+<td colspan="2"><div id="rules">Player1 roll the dice</div></td>
+</tr>
+</tbody>
+</table>
+<br>
 
+<svg viewbox="0 0 100 100">
+<rect width="100" height="100" fill="grey"/>
+<path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L90 91" fill="none" stroke="black" stroke-width="0.5px"/>
+<path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L90 91" fill="none" stroke="black" stroke-width="006px" stroke-dasharray="0 10" stroke-linecap="round"/>
+<path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L90 91" fill="none" stroke="black" stroke-width="006px" stroke-dasharray="0 10" stroke-linecap="round"/>
 
-<line x1="0" y1="60" x2="160" y2="60" stroke="black" stroke-width="0.5px"/>
+<g id="g1" transform="translate(100 100)">
+<circle cx="0" cy="-2" fill="royalblue" r="1px">
+<animate attributeName="r" values="1;0.8;1" begin="0s" dur="1s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="6s" repeatCount="indefinite"/>
+</circle>
+</g>
+
+<g id="g2" transform="translate(100 100)">
+<circle cx="0" cy="2" fill="crimson" r="1px">
+<animate attributeName="r" values="1;0.8;1" begin="0s" dur="1s" repeatCount="indefinite"/>
+<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="6s" repeatCount="indefinite"/>
+</circle>
+</g>
 </svg>
+<br>
+
 <script>
-var div1=document.getElementById("div1");
-var div2=document.getElementById("div2");
-var lancer=document.getElementById("lancer");
-function lanc(){
-div1.innerHTML=Math.round(Math.random()*5)+1;
-div2.innerHTML=Math.round(Math.random()*5)+1;
+var bp1=document.getElementById("bp1");
+var bp2=document.getElementById("bp2");
+var tdi1=document.getElementById("tdi1");
+var tdi2=document.getElementById("tdi2");
+var divp1=document.getElementById("divp1");
+var divp2=document.getElementById("divp2");
+var rp1=document.getElementById("rp1");
+var rp2=document.getElementById("rp2");
+var pos1=document.getElementById("pos1");
+var pos2=document.getElementById("pos2");
+var ip1=document.getElementById("ip1");
+var ip2=document.getElementById("ip2");
+var coorp1=["10 10","20 10","30 10","40 10","50 10","60 10","70 10","80 10","90 10","90 20","80 20","70 20","60 20","50 20","40 20","30 20","20 20","10 20",
+			"10 30","20 30","30 30","40 30","50 30","60 30","70 30","80 30","90 30","90 40","80 40","70 40","60 40","50 40","40 40","30 40","20 40","10 40",
+			"10 50","20 50","30 50","40 50","50 50","60 50","70 50","80 50","90 50","90 60","80 60","70 60","60 60","50 60","40 60","30 60","20 60","10 60",
+			"10 70","20 70","30 70","40 70","50 70","60 70","70 70","80 70","90 70","90 80","80 80","70 80","60 80","50 80","40 80","30 80","20 80","10 80",
+			"10 90","20 90","30 90","40 90","50 90","60 90","70 90","90 90"];
+var coorp2=["10 10","20 10","30 10","40 10","50 10","60 10","70 10","80 10","90 10","90 20","80 20","70 20","60 20","50 20","40 20","30 20","20 20","10 20",
+			"10 30","20 30","30 30","40 30","50 30","60 30","70 30","80 30","90 30","90 40","80 40","70 40","60 40","50 40","40 40","30 40","20 40","10 40",
+			"10 50","20 50","30 50","40 50","50 50","60 50","70 50","80 50","90 50","90 60","80 60","70 60","60 60","50 60","40 60","30 60","20 60","10 60",
+			"10 70","20 70","30 70","40 70","50 70","60 70","70 70","80 70","90 70","90 80","80 80","70 80","60 80","50 80","40 80","30 80","20 80","10 80",
+			"10 90","20 90","30 90","40 90","50 90","60 90","70 90","90 90"];
+var g1=document.getElementById("g1");
+var g2=document.getElementById("g2");
+var dicep1;
+var dicep2;
+var positionp1=0;
+var positionp2=0;
+var rules=document.getElementById("rules");
+var winner;
+
+g1.setAttribute("transform","translate("+coorp1[positionp1]+")");
+g2.setAttribute("transform","translate("+coorp2[positionp2]+")");
+
+bp1.addEventListener("click",p1play);
+
+
+function p1play(){
+	bp1.removeEventListener("click",p1play);
+	bp1.style.opacity=0.25;
+	dicep1=Math.round(Math.random()*5)+1;
+	rp1.innerHTML=dicep1;
+	rp2.innerHTML="-";
+	positionp1=positionp1+dicep1;
+	if(positionp1>=79){
+		g1.setAttribute("transform","translate("+coorp1[79]+")");
+		winner=divp1.innerHTML;
+		state();
+		rules.innerHTML="The winner is "+winner;
+	}else{
+	g1.setAttribute("transform","translate("+coorp1[positionp1]+")");
+	pos1.innerHTML=positionp1+"/"+coorp1.length;
+	state();
+	rules.innerHTML=divp2.innerHTML+" roll the dice";
+	bp2.style.opacity=1;
+	bp2.addEventListener("click",p2play);
 }
-lancer.addEventListener("click",lanc);
+}
+
+function p2play(){
+	bp2.removeEventListener("click",p2play);
+	bp2.style.opacity=0.25;
+	dicep2=Math.round(Math.random()*5)+1;
+	rp2.innerHTML=dicep2;
+	rp1.innerHTML="-";
+	positionp2=positionp2+dicep2;
+	if(positionp2>=79){
+		g2.setAttribute("transform","translate("+coorp1[79]+")");
+		winner=divp2.innerHTML;
+		state();
+		rules.innerHTML="The winner is "+winner;
+	}else{
+	g2.setAttribute("transform","translate("+coorp2[positionp2]+")");
+	pos2.innerHTML=positionp2+"/"+coorp2.length;
+	state();
+	rules.innerHTML=divp1.innerHTML+" roll the dice";
+	bp1.style.opacity=1;
+	bp1.addEventListener("click",p1play);
+}
+}
+
+function state(){
+if(positionp1>positionp2){
+	ip1.src="p1happy.png";
+	ip2.src="p2angry.png";
+	}else if(positionp1<positionp2){
+	ip1.src="p1angry.png";
+	ip2.src="p2happy.png";
+	}else if(positionp1==positionp2){
+	ip1.src="p1.png";
+	ip2.src="p2.png";
+	}
+}
 </script>
 </body>
 </html>

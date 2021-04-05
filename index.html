@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Paranoia Duel</title>
+	<link rel="icon" href="skull.png" type="image/png"> 
+	<style>
+		html,
+		body {
+		  height: 100%;
+		  user-select: none;
+		}
+		body {
+		  font-family: monospace, sans;
+		  text-align: center;
+		  overflow: hidden;
+		  background-color: grey;
+		  transition:6s;
+		}
+		table {
+		  width: 500px;
+		  margin-left: auto;
+		  margin-right: auto;
+		}
+		table,
+		th,
+		td {
+		  padding: 10px;
+		  border: 1px solid grey;
+		  border-collapse: collapse;
+		}
+		svg {
+		  width: 500px;
+		  height: 500px;
+		  border: 1px solid black;
+		}
+		#tdp1 {
+		  background-color: lightgrey;
+		  font-weight: bold;
+		  font-size: 20px;
+		  color: royalblue;
+		}
+		#tdp2 {
+		  background-color: lightgrey;
+		  font-weight: bold;
+		  font-size: 20px;
+		  color: crimson;
+		}
+		#skull {
+		  transition: 0.5s;
+		}
+		#sk {
+		  transition: 0.25s;
+		}
+		#bp1 {
+		  opacity: 1;
+		  transition: 1s;
+		}
+		#bp2 {
+		  opacity: 0.25;
+		  transition: 1s;
+		}
+		#g1, #g2, #c1, #c2 {
+		  transition-timing-function: linear;
+		  transition: 2s;
+		}
+		#tdi1 {
+		  transition: 2s;
+		}
+		#tdi2 {
+		  transition: 2s;
+		}
+		#gstart {
+		  transition: 3s;
+		}
+		#txtdou {
+		  transition: 1s;
+		}
+		#txtdead {
+		  transition: 2s;
+		}
+		#txtwarp {
+		  transition: 1s;
+		}
+		#txtwin {
+		  transition: 1s;
+		}
+		#iback {
+		  transition: 3s;
+		}
+		.pointer {
+		  cursor: pointer;
+		}
+		button {
+		  font-family: consolas;
+		  width: 50px;
+		  height: 50px;
+		}
+		td {
+		  background-color: lightgrey;
+		  visibility: hidden;
+		  opacity: 0;
+		  transition: 3s;
+		}
+		#div1{
+		width:25%;
+		font-size:1em;
+		opacity:1;
+		visibility:visible;
+		text-align:left;
+		position:fixed;
+		left: 8px;
+		top: 8px;
+		transition: 3s;
+		}
+	</style>
+</head>
+
+<body>
+	<audio id="tune" loop>
+		<source src="music.mp3" type="audio/mpeg">
+		</audio>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			xmlns:xlink="http://www.w3.org/1999/xlink" viewbox="0 0 100 100">
+			<defs>
+			<filter id="fecolor">
+				<fecolormatrix type="hueRotate">
+				<animate attributename="values" begin="0s" dur="24s" values="0;360;0" repeatcount="indefinite"/>
+				</fecolormatrix>
+			</filter>
+			<filter height="200%" width="200%" y="-50%" x="-50%" id="blur">
+				<feGaussianBlur stdDeviation="0.4" in="SourceGraphic"/>
+			</filter>
+			</defs>
+			<rect width="100" height="100" fill="#2d2d2d" opacity="1"/>
+			<image xlink:href="tunnel.gif" width="100" height="100" opacity="0.5">
+				<animate attributeName="opacity" values="0.5;0.3;0.5" begin="0s" dur="1s" repeatCount="indefinite"/>
+			</image>
+			<image id="iback" xlink:href="win.gif" width="100" height="100" opacity="0"/>
+			
+			<path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L91 90" fill="none" stroke="black" stroke-width="2px"/>
+			<path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L91 90" fill="none" stroke="black" stroke-width="006px" stroke-dasharray="0 10" stroke-linecap="round"/>
+			<path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L91 90" fill="none" stroke="grey" stroke-width="002px" stroke-dasharray="0 10" stroke-linecap="round"/>
+
+			<g id="bonus1" transform="translate(0 0)"><circle cx="0" cy="0" fill="gold" r="1px"></circle></g>
+			<g id="bonus2" transform="translate(0 0)"><circle cx="0" cy="0" fill="gold" r="1px"></circle></g>
+			<g id="bonus3" transform="translate(0 0)"><circle cx="0" cy="0" fill="gold" r="1px"></circle></g>
+			<g id="bonus4" transform="translate(0 0)"><circle cx="0" cy="0" fill="gold" r="1px"></circle></g>
+			<g id="bonus5" transform="translate(0 0)"><circle cx="0" cy="0" fill="gold" r="1px"></circle></g>
+			
+			<circle cx="90" cy="90" fill="white" r="1.5px"><animate attributeName="fill" values="white;black;white" begin="0s" dur="4s" repeatCount="indefinite"/></circle>
+
+			<g id="skull" transform="translate(0 0)">
+				<text x="0" y="0.7"  font-size="5px" dominant-baseline="middle" text-anchor="middle" id="sk" fill="white">💀</text>
+			</g>
+			
+			<g id="g1" transform="translate(10 10)">
+				<g>
+				<circle id="c1" cx="0" cy="-2" fill="royalblue" r="1px"></circle>
+				<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="6s" repeatCount="indefinite"/>
+				</g>
+			</g>
+			<g id="g2" transform="translate(10 10)">
+				<g>
+				<circle id="c2" cx="0" cy="2" fill="crimson" r="1px"></circle>
+				<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="6s" repeatCount="indefinite"/>
+				</g>
+			</g>
+			
+			<g id="exch1" transform="translate(50 50)">
+				<circle cx="0" cy="0" fill="green" r="1px">
+					<animate attributeName="fill" values="green;#0f0;green" begin="0s" dur="0.3s" repeatCount="indefinite"/>
+				</circle>
+			</g>
+			
+			<g id="exch2" transform="translate(80 90)">
+				<circle cx="0" cy="0" fill="green" r="1px">
+					<animate attributeName="fill" values="green;#0f0;green" begin="0s" dur="0.3s" repeatCount="indefinite"/>
+				</circle>
+			</g>
+
+			<g id="blue" transform="translate(0 0)">
+				<g>
+				<image xlink:href="blue_portal.png" x="-2.5" y="-2.5" width="5" height="5" opacity="1"/>
+				<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="2s" repeatCount="indefinite"/>
+				</g>
+			</g>
+			<g id="orange" transform="translate(0 0)">
+				<g>
+				<image xlink:href="orange_portal.png" x="-2.5" y="-2.5" width="5" height="5" opacity="1"/>
+				<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="2s" repeatCount="indefinite"/>
+				</g>
+			</g>
+			
+			<g id="gstart" transform="translate(0 0)" class="pointer">
+				<image xlink:href="door.jpg" width="100" height="100" opacity="1"/>
+				<image xlink:href="title.png" width="100" height="100" opacity="1" filter="url(#fecolor)"/>
+				<text x="51" y="51" dominant-baseline="middle" text-anchor="middle" fill="black" font-size="12px" filter="url(#blur)">[START]</text>
+				<text x="50" y="50" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="12px">[START]</text>
+			</g>
+			
+			<g id="txtdou" transform="translate(0 0)">
+				<text x="-50" y="40" dominant-baseline="middle" text-anchor="middle">👍</text>
+				<text x="-50" y="60" dominant-baseline="middle" text-anchor="middle" fill="gold">PLAY AGAIN</text>
+			</g>
+			
+			<g id="txtdead" transform="translate(0 0)">
+				<text x="-50" y="40" dominant-baseline="middle" text-anchor="middle">💀</text>
+				<text x="-50" y="60" dominant-baseline="middle" text-anchor="middle" fill="white">DEATH</text>
+			</g>
+			
+			<g id="txtwarp" transform="translate(0 0)">
+				<text x="-50" y="40" dominant-baseline="middle" text-anchor="middle">😵</text>‍
+				<text x="-50" y="60" dominant-baseline="middle" text-anchor="middle" fill="#0f0">SWAP</text>
+			</g>
+
+			<g id="txtwin" transform="translate(0 0)">
+				<text x="-50" y="40" dominant-baseline="middle" text-anchor="middle">🏆</text>‍
+				<text x="-50" y="60" dominant-baseline="middle" text-anchor="middle" fill="gold">VICTORY</text>
+			</g>				
+		</svg>
+		<br>
+		<div id="before"></div>
+		<table class="center">
+		<tbody>
+			<tr>
+				<th colspan="2" id="tdp1" class="col1">
+					<div contenteditable id="divp1">Player 1</div>
+				</th>
+				<th colspan="2" id="tdp2" class="col2">
+					<div contenteditable id="divp2">Player 2</div>
+				</th>
+			</tr>
+			<tr>
+				<td colspan="2" id="tdi1" class="col1">
+					<img id="ip1" src="p1.png" width="100px" height="auto"/>
+				</td>
+				<td colspan="2" id="tdi2" class="col2">
+					<img id="ip2" src="p2.png" width="100px" height="auto"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="col1" width="25%">
+					<button id="bp1">Roll
+						<br>Dice
+						</button>
+					</button>
+				</td>
+				<td class="col1" width="25%" id="rp1" style="font-size:50px;color:royalblue">-</td>
+				<td class="col2" width="25%">
+					<button id="bp2">Roll
+						<br>Dice
+						</button>
+					</td>
+					<td class="col2" width="25%" id="rp2" style="font-size:50px;color:crimson;">-</td>
+				</tr>
+				<tr>
+					<td id="pos1" colspan="2" class="col1">0/80</td>
+					<td id="pos2" colspan="2" class="col2">0/80</td>
+				</tr>
+				<tr>
+					<td colspan="4" style="background-color:whitesmoke;">
+						<div id="rules"></div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<br>
+
+<div id="div1">
+<b>Paranoia Duel β Rules:</b><br>
+- This is a procedural local dice tabletop game for two players<br>
+- It was created from scratch as ideas came along<br>
+- You can change names before playing by clicking on them<br>
+- Each player in turn rolls 1D6<br>
+- There are bugs :) This is part of the enjoyment ...<br>
+- First arrived on last dot wins<br>
+- <b>1</b>: Brings 💀 randomly within 1D6 dots of the most advanced player<br>
+- 💀: Death, you return to start<br>
+- <span style="color:gold;">•</span>: You can play again<br>
+- <span style="color:green;">•</span>: You swap positions<br>
+- Portal : Travel to the other end<br>
+- F5 if you want to re-roll everything<br>
+- For more <a href="todo.html">go elsewhere</a><br>
+</div>
+
+<script>
+/*global document: false */
+/*global Audio: false */
+var tune = document.getElementById("tune");
+var bp1 = document.getElementById("bp1");
+var bp2 = document.getElementById("bp2");
+var tdi1 = document.getElementById("tdi1");
+var tdi2 = document.getElementById("tdi2");
+var divp1 = document.getElementById("divp1");
+var divp2 = document.getElementById("divp2");
+var rp1 = document.getElementById("rp1");
+var rp2 = document.getElementById("rp2");
+var pos1 = document.getElementById("pos1");
+var pos2 = document.getElementById("pos2");
+var ip1 = document.getElementById("ip1");
+var ip2 = document.getElementById("ip2");
+var gstart = document.getElementById("gstart");
+var skull = document.getElementById("skull");
+var sk = document.getElementById("sk");
+var c1 =  document.getElementById("c1");
+var c2 =  document.getElementById("c2");
+var iback =  document.getElementById("iback");
+var coor = ["10 10", "20 10", "30 10", "40 10", "50 10", "60 10", "70 10", "80 10", "90 10", "90 20", "80 20", "70 20", "60 20", "50 20", "40 20", "30 20", "20 20", "10 20", "10 30", "20 30", "30 30", "40 30", "50 30", "60 30", "70 30", "80 30", "90 30", "90 40", "80 40", "70 40", "60 40", "50 40", "40 40", "30 40", "20 40", "10 40", "10 50", "20 50", "30 50", "40 50", "50 50", "60 50", "70 50", "80 50", "90 50", "90 60", "80 60", "70 60", "60 60", "50 60", "40 60", "30 60", "20 60", "10 60", "10 70", "20 70", "30 70", "40 70", "50 70", "60 70", "70 70", "80 70", "90 70", "90 80", "80 80", "70 80", "60 80", "50 80", "40 80", "30 80", "20 80", "10 80", "10 90", "20 90", "30 90", "40 90", "50 90", "60 90", "70 90", "80 90", "90 90"];
+var coor_death = ["20 10", "30 10", "40 10", "50 10", "60 10", "70 10", "80 10", "90 10", "90 20", "80 20", "70 20", "60 20", "50 20", "40 20", "30 20", "20 20", "10 20", "10 30", "20 30", "30 30", "40 30", "50 30", "60 30", "70 30", "80 30", "90 30", "90 40", "80 40", "70 40", "60 40", "50 40", "40 40", "30 40", "20 40", "10 40", "10 50", "20 50", "30 50", "40 50", "50 50", "60 50", "70 50", "80 50", "90 50", "90 60", "80 60", "70 60", "60 60", "50 60", "40 60", "30 60", "20 60", "10 60", "10 70", "20 70", "30 70", "40 70", "50 70", "60 70", "70 70", "80 70", "90 70", "90 80", "80 80", "70 80", "60 80", "50 80", "40 80", "30 80", "20 80", "10 80", "10 90", "20 90", "30 90", "40 90", "50 90", "60 90", "70 90"];
+var g1 = document.getElementById("g1");
+var g2 = document.getElementById("g2");
+var div1=document.getElementById("div1");
+var dicep1;
+var dicep2;
+var positionp1 = 0;
+var positionp2 = 0;
+var rules = document.getElementById("rules");
+var audio_open = new Audio("open.mp3");
+var audio_dice = new Audio("dice.mp3");
+var audio_bonus = new Audio("bonus.mp3");
+var audio_victory = new Audio("victory.mp3");
+var audio_death = new Audio("death.mp3");
+var audio_dead = new Audio("dead.mp3");
+var audio_warp = new Audio("warp.mp3");
+var winner;
+var bonus1 = document.getElementById("bonus1");
+var bonus2 = document.getElementById("bonus2");
+var bonus3 = document.getElementById("bonus3");
+var bonus4 = document.getElementById("bonus4");
+var bonus5 = document.getElementById("bonus5");
+var txtdou = document.getElementById("txtdou");
+var txtdead = document.getElementById("txtdead");
+var txtwarp = document.getElementById("txtwarp");
+var txtwin = document.getElementById("txtwin");
+var blue = document.getElementById("blue");
+var orange = document.getElementById("orange");
+var blue_pos=Math.round(Math.random() * 77)+1;
+var orange_pos=Math.round(Math.random() * 77)+1;
+var posb1 = Math.round(Math.random() * 77)+1;
+var posb2 = Math.round(Math.random() * 77)+1;
+var posb3 = Math.round(Math.random() * 77)+1;
+var posb4 = Math.round(Math.random() * 77)+1;
+var posb5 = Math.round(Math.random() * 77)+1;
+var tds = document.getElementsByTagName("td");
+var pos_death = Math.round(Math.random() * coor_death.length);
+var first;
+
+function init() {
+  gstart.removeEventListener("click", init);
+  document.body.style.backgroundColor="#111";
+  div1.style.opacity=0;
+  div1.style.visibility="hidden";
+  audio_open.play();
+  tune.volume = 0.1;
+  tune.play();
+  gstart.setAttribute("transform", "translate(0 100)");
+  document.getElementById("before").innerHTML = "";
+  gstart.removeEventListener("click", init);
+  for (var i = 0; i < tds.length; i++) {
+    tds[i].style.visibility = "visible";
+    tds[i].style.opacity = 1;
+  }
+  rules.innerHTML = divp1.innerHTML + " rolls the dice";
+}
+
+function p1move(){
+	c1.setAttribute("r","2px");
+	setTimeout(function() {
+      c1.setAttribute("r", "1px");
+    }, 1000);
+    g1.setAttribute("transform", "translate(" + coor[positionp1] + ")");
+    pos1.innerHTML = positionp1 + "/" + (coor.length - 1);
+}
+
+function p2move(){
+	c2.setAttribute("r","2px");
+	setTimeout(function() {
+      c2.setAttribute("r", "1px");
+    }, 1000);
+    g2.setAttribute("transform", "translate(" + coor[positionp2] + ")");
+    pos2.innerHTML = positionp2 + "/" + (coor.length - 1);
+}
+
+
+function p1play() {
+  bp1.removeEventListener("click", p1play);
+  audio_dice.play();
+  bp1.style.opacity = 0.25;
+  dicep1 = Math.round(Math.random() * 5) + 1;
+  rp1.innerHTML = dicep1;
+  rp2.innerHTML = "-";
+  if (dicep1 === 1) {
+    positionp1 = positionp1 + dicep1;
+    p1move();
+	checkportalp1();
+    death_move();
+    if (coor_death[pos_death] === coor[positionp1]) {
+      deadp1();
+    } else if (positionp1 === posb1 || positionp1 === posb2 || positionp1 ===
+      posb3 || positionp1 === posb4 || positionp1 === posb5) {
+      doublep1();
+    } else {
+      if (coor_death[pos_death] === coor[positionp2]) {
+        deadp2();
+      };
+      if (coor[positionp1] === "50 50" || coor[positionp1] === "80 90") {
+        xch();
+      };
+    }
+    p1end();
+  }
+
+  if (dicep1 != 1) {
+    positionp1 = positionp1 + dicep1;
+    if (coor_death[pos_death] === coor[positionp1]) {
+      deadp1();
+    } else if (positionp1 === posb1 || positionp1 === posb2 || positionp1 ===
+      posb3 || positionp1 === posb4 || positionp1 === posb5) {
+      doublep1();
+    } else if (positionp1 >= 80) {
+      p1win();
+    } else {
+      p1move();
+	  checkportalp1();
+      state();
+      if (coor[positionp1] === "50 50" || coor[positionp1] === "80 90") {
+        xch();
+      };
+      p1end();
+    }
+  }
+}
+
+function p2play() {
+  bp2.removeEventListener("click", p2play);
+  audio_dice.play();
+  bp2.style.opacity = 0.25;
+  dicep2 = Math.round(Math.random() * 5) + 1;
+  rp2.innerHTML = dicep2;
+  rp1.innerHTML = "-";
+  if (dicep2 === 1) {
+    positionp2 = positionp2 + dicep2;
+    p2move();
+	checkportalp2();
+    death_move()
+    if (coor_death[pos_death] === coor[positionp2]) {
+      deadp2();
+    } else if (positionp2 === posb1 || positionp2 === posb2 || positionp2 ===
+      posb3 || positionp2 === posb4 || positionp2 === posb5) {
+      doublep2();
+    } else {
+      if (coor_death[pos_death] === coor[positionp1]) {
+        deadp1();
+      };
+      if (coor[positionp2] === "50 50" || coor[positionp2] === "80 90") {
+        xch();
+      };
+    }
+    p2end();
+  }
+
+  if (dicep2 != 1) {
+    positionp2 = positionp2 + dicep2;
+    if (coor_death[pos_death] === coor[positionp2]) {
+      deadp2();
+    } else if (positionp2 === posb1 || positionp2 === posb2 || positionp2 ===
+      posb3 || positionp2 === posb4 || positionp2 === posb5) {
+      doublep2();
+    } else if (positionp2 >= 80) {
+      p2win();
+    } else {
+      p2move();
+	  checkportalp1();
+      state();
+      if (coor[positionp2] === "50 50" || coor[positionp2] === "80 90") {
+        xch();
+      };
+      p2end();
+    }
+  }
+}
+
+while (coor[blue_pos] === coor[orange_pos]) {
+  orange_pos=Math.round(Math.random() * 77)+1;
+}
+while (coor[posb1] === "50 50") {
+  posb1 = Math.round(Math.random() * 77)+1;
+}
+while (posb2 === posb1 || coor[posb2] === "50 50") {
+  posb2 = Math.round(Math.random() * 77)+1;
+}
+while (posb3 === posb1 || posb3 === posb2 || coor[posb3] === "50 50") {
+  posb3 = Math.round(Math.random() * 77)+1;
+}
+while (posb4 === posb1 || posb4 === posb2 || posb4 === posb3 || coor[posb4] === "50 50") {
+  posb4 = Math.round(Math.random() * 77)+1;
+}
+while (posb5 === posb1 || posb5 === posb2 || posb5 === posb3 || posb5 === posb4 || coor[posb5] === "50 50") {
+  posb5 = Math.round(Math.random() * 77)+1;
+}
+while (coor_death[pos_death] === "50 50") {
+  Math.round(Math.random() * coor_death.length);
+}
+
+gstart.addEventListener("click", init);
+
+bonus1.setAttribute("transform", "translate(" + coor[posb1] + ")");
+bonus2.setAttribute("transform", "translate(" + coor[posb2] + ")");
+bonus3.setAttribute("transform", "translate(" + coor[posb3] + ")");
+bonus4.setAttribute("transform", "translate(" + coor[posb4] + ")");
+bonus5.setAttribute("transform", "translate(" + coor[posb5] + ")");
+skull.setAttribute("transform", "translate(" + coor_death[pos_death] + ")");
+blue.setAttribute("transform", "translate(" + coor[blue_pos] + ")");
+orange.setAttribute("transform", "translate(" + coor[orange_pos] + ")");
+
+g1.setAttribute("transform", "translate(" + coor[positionp1] + ")");
+g2.setAttribute("transform", "translate(" + coor[positionp2] + ")");
+tdi1.style.backgroundColor = "whitesmoke";
+bp1.addEventListener("click", p1play);
+
+function p1end() {
+  rules.innerHTML = divp2.innerHTML + " rolls the dice";
+  tdi1.style.backgroundColor = "lightgrey";
+  tdi2.style.backgroundColor = "whitesmoke";
+  bp2.style.opacity = 1;
+  bp2.addEventListener("click", p2play);
+}
+
+function p2end() {
+  rules.innerHTML = divp1.innerHTML + " rolls the dice";
+  tdi2.style.backgroundColor = "lightgrey";
+  tdi1.style.backgroundColor = "whitesmoke";
+  bp1.style.opacity = 1;
+  bp1.addEventListener("click", p1play);
+}
+
+function state() {
+  if (positionp1 > positionp2) {
+    ip1.src = "p1happy.png";
+    ip2.src = "p2angry.png";
+  } else if (positionp1 < positionp2) {
+    ip1.src = "p1angry.png";
+    ip2.src = "p2happy.png";
+  } else if (positionp1 === positionp2) {
+    ip1.src = "p1.png";
+    ip2.src = "p2.png";
+  }
+}
+
+function doublep1() {
+  bp1.addEventListener("click", p1play);
+  bp1.style.opacity = 1;
+  g1.setAttribute("transform", "translate(" + coor[positionp1] + ")");
+  pos1.innerHTML = positionp1 + "/" + (coor.length - 1);
+  state();
+  setTimeout(function() {
+    txtdou.setAttribute("transform", "translate(100 0)");
+    setTimeout(function() {
+      txtdou.setAttribute("transform", "translate(0 0)");
+    }, 2000);
+    audio_bonus.play();
+    rules.innerHTML = "You can play again";
+  }, 1200);
+}
+
+function doublep2() {
+  bp2.addEventListener("click", p2play);
+  bp2.style.opacity = 1;
+  p2move();
+  state();
+  setTimeout(function() {
+    txtdou.setAttribute("transform", "translate(100 0)");
+    setTimeout(function() {
+      txtdou.setAttribute("transform", "translate(0 0)");
+    }, 2000);
+    audio_bonus.play();
+    rules.innerHTML = "You can play again";
+  }, 1200);
+}
+
+function deadp1() {
+  g1.setAttribute("transform", "translate(" + coor[positionp1] + ")");
+  pos1.innerHTML = positionp1 + "/" + (coor.length - 1);
+  setTimeout(function() {
+    txtdead.setAttribute("transform", "translate(100 0)");
+    setTimeout(function() {
+      txtdead.setAttribute("transform", "translate(0 0)");
+    }, 2000);
+    audio_dead.play();
+    positionp1 = 0;
+    g1.setAttribute("transform", "translate(" + coor[positionp1] +
+      ")");
+    pos1.innerHTML = positionp1 + "/" + (coor.length - 1);
+    rules.innerHTML = "You are dead but all hope is not lost";
+    p1end();
+  }, 1200);
+}
+
+function deadp2() {
+  p2move();
+  setTimeout(function() {
+    txtdead.setAttribute("transform", "translate(100 0)");
+    setTimeout(function() {
+      txtdead.setAttribute("transform", "translate(0 0)");
+    }, 2000);
+    audio_dead.play();
+    positionp2 = 0;
+    g2.setAttribute("transform", "translate(" + coor[positionp2] +
+      ")");
+    pos2.innerHTML = positionp2 + "/" + (coor.length - 1);
+    rules.innerHTML = "You are dead but all hope is not lost";
+    p2end();
+  }, 1200);
+}
+
+function p1win() {
+  g1.setAttribute("transform", "translate(" + coor[80] + ")");
+  pos1.innerHTML = 80 + "/" + (coor.length - 1);
+  setTimeout(function() {
+    tune.pause();
+	txtwin.setAttribute("transform", "translate(100 0)");
+    audio_victory.play();
+	iback.style.opacity=1;
+  }, 250);
+  winner = divp1.innerHTML;
+  ip1.src = "p1win.gif";
+  ip2.src = "p2sad.png";
+  tdi1.style.backgroundColor = "gold";
+  tdi2.style.backgroundColor = "#2d2d2d";
+  rules.innerHTML = "The winner is " + winner;
+}
+
+function p2win() {
+  g2.setAttribute("transform", "translate(" + coor[80] + ")");
+  pos2.innerHTML = 80 + "/" + (coor.length - 1);
+  setTimeout(function() {
+    tune.pause();
+	txtwin.setAttribute("transform", "translate(100 0)");
+    audio_victory.play();
+	iback.style.opacity=1;
+  }, 250);
+  winner = divp2.innerHTML;
+  ip1.src = "p1sad.png";
+  ip2.src = "p2win.gif";
+  tdi1.style.backgroundColor = "#2d2d2d";
+  tdi2.style.backgroundColor = "gold";
+  rules.innerHTML = "The winner is " + winner;
+}
+
+function death_move() {
+  sk.setAttribute("font-size", "10px");
+  setTimeout(function() {
+    sk.setAttribute("font-size", "5px");
+  }, 500);
+  audio_death.play();
+  if (positionp1 > positionp2) {
+    first = positionp1
+  } else {
+    first = positionp2
+  }
+  pos_death = first + Math.round(Math.random() * 6);
+  while (coor_death[pos_death] === "50 50") {
+    pos_death = first + Math.round(Math.random() * 6);
+  };
+  if(pos_death > 76){pos_death=75};
+  skull.setAttribute("transform", "translate(" + coor_death[pos_death] + ")");
+}
+
+function xch() {
+  txtwarp.setAttribute("transform", "translate(100 0)");
+  setTimeout(function() {
+    txtwarp.setAttribute("transform", "translate(0 0)");
+    audio_warp.play();
+    [positionp1, positionp2] = [positionp2, positionp1];
+    g1.setAttribute("transform", "translate(" + coor[positionp1] +
+      ")");
+    pos1.innerHTML = positionp1 + "/" + (coor.length - 1);
+    g2.setAttribute("transform", "translate(" + coor[positionp2] +
+      ")");
+    pos2.innerHTML = positionp2 + "/" + (coor.length - 1);
+  }, 2000);
+}
+
+function checkportalp1(){
+if(positionp1===blue_pos){
+
+}
+if(positionp1===orange_pos){
+}
+}
+function checkportalp2(){
+if(positionp1===blue_pos){
+
+}
+if(positionp1===orange_pos){
+}
+}
+</script>
+</body>
+</html>

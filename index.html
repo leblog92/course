@@ -74,19 +74,19 @@
 		  transition: 3s;
 		}
 		#txtdou {
-		  transition: 1.1s;
+		  transition: 0.5s;
 		}
 		#txtdead {
-		  transition: 1.1s;
+		  transition: 0.5s;
 		}
 		#txtwarp {
-		  transition: 1.1s;
+		  transition: 0.5s;
 		}
 		#txtwin {
-		  transition: 1.1s;
+		  transition: 0.5s;
 		}
 		#txtportal {
-		  transition: 1.1s;
+		  transition: 0.5s;
 		}
 		#iback {
 		  transition: 3s;
@@ -408,7 +408,6 @@ function p2move() {
     checkportalp2();
 }
 
-
 function p1play() {
     bp1.removeEventListener("click", p1play);
     audio_dice.play();
@@ -543,12 +542,12 @@ tdi1.style.backgroundColor = "whitesmoke";
 bp1.addEventListener("click", p1play);
 
 
-function checkall(){
+/*function checkall(){
 if(coor[positionp1]==coor[blue_pos]||coor[positionp2]==coor[blue_pos]){pbd="yes";}else{pbd="no";}
 if(coor[positionp1]==coor[orange_pos]||coor[positionp2]==coor[orange_pos]){pod="yes";}else{pod="no";}
 div2.innerHTML="<b>Log</b><br>player1: "+coor[positionp1]+"<br>player2: "+coor[positionp2]+"<br>bonus1: "+coor[posb1]+"<br>bonus2: "+coor[posb2]+"<br>bonus3: "+coor[posb3]+"<br>bonus4: "+coor[posb4]+"<br>bonus5: "+coor[posb5]+ "<br>death: "+coor_death[pos_death]+"<br>blue portal: "+coor[blue_pos]+"<br>orange portal: "+coor[orange_pos]+"<br>blue portal detected: "+pbd+"<br>orange portal detected: "+pod;
 }
-setInterval(checkall,1000);
+setInterval(checkall,1000);*/
 
 
 function p1end() {
@@ -761,7 +760,7 @@ function checkportalp2() {
             txtportal.setAttribute("transform", "translate(0 0)");
             audio_portal.play();
             g2.setAttribute("transform", "translate(" + coor[positionp2] + ")");
-            pos2.innerHTML = positionp1 + "/" + (coor.length - 1);
+            pos2.innerHTML = positionp2 + "/" + (coor.length - 1);
         }, 2000);
     }
 }

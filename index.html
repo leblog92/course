@@ -151,7 +151,7 @@
 				</fecolormatrix>
 			</filter>
 			<filter height="200%" width="200%" y="-50%" x="-50%" id="blur">
-				<feGaussianBlur stdDeviation="0.4" in="SourceGraphic"/>
+				<feGaussianBlur stdDeviation="0.2" in="SourceGraphic"/>
 			</filter>
 			</defs>
 			<rect width="100" height="100" fill="#2d2d2d" opacity="1"/>
@@ -203,13 +203,13 @@
 
 			<g id="blue" transform="translate(0 0)">
 				<g>
-				<image xlink:href="blue_portal.png" x="-2.5" y="-2.5" width="5" height="5" opacity="1"/>
+				<image xlink:href="blue_portal.png" x="-2.5" y="-2.5" width="5" height="5" opacity="1" filter="url(#blur)"/>
 				<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="2s" repeatCount="indefinite"/>
 				</g>
 			</g>
 			<g id="orange" transform="translate(0 0)">
 				<g>
-				<image xlink:href="orange_portal.png" x="-2.5" y="-2.5" width="5" height="5" opacity="1"/>
+				<image xlink:href="orange_portal.png" x="-2.5" y="-2.5" width="5" height="5" opacity="1" filter="url(#blur)"/>
 				<animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0; 360 0 0" begin="0s" dur="2s" repeatCount="indefinite"/>
 				</g>
 			</g>

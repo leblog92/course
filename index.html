@@ -729,8 +729,7 @@ function checkportalp1() {
             g1.setAttribute("transform", "translate(" + coor[positionp1] + ")");
             pos1.innerHTML = positionp1 + "/" + (coor.length - 1);
         }, 2000);
-    }
-    if (coor[positionp1] == coor[orange_pos]) {
+    } else if (coor[positionp1] == coor[orange_pos]) {
         positionp1 = blue_pos;
         txtportal.setAttribute("transform", "translate(100 0)");
         setTimeout(function() {
@@ -752,8 +751,7 @@ function checkportalp2() {
             g2.setAttribute("transform", "translate(" + coor[positionp2] + ")");
             pos2.innerHTML = positionp2 + "/" + (coor.length - 1);
         }, 2000);
-    }
-    if (coor[positionp2] == coor[orange_pos]) {
+    } else if (coor[positionp2] == coor[orange_pos]) {
         positionp2 = blue_pos;
         txtportal.setAttribute("transform", "translate(100 0)");
         setTimeout(function() {

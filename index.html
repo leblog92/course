@@ -284,8 +284,10 @@
 					<td class="col2" width="25%" id="rp2" style="font-size:50px;color:crimson;">-</td>
 				</tr>
 				<tr>
-					<td id="pos1" colspan="2" class="col1">0/80</td>
-					<td id="pos2" colspan="2" class="col2">0/80</td>
+					<td id="gold1">0 💰</td>
+					<td id="pos1" class="col1">0/80</td>
+					<td id="gold2" class="col1">0 💰</td>
+					<td id="pos2">0/80</td>
 				</tr>
 				<tr>
 					<td colspan="4" style="background-color:whitesmoke;">
@@ -322,6 +324,8 @@ var skull = document.getElementById("skull");
 var sk = document.getElementById("sk");
 var c1 = document.getElementById("c1");
 var c2 = document.getElementById("c2");
+var gold1 = document.getElementById("gold1");
+var gold2 = document.getElementById("gold2");
 var iback = document.getElementById("iback");
 var coor = ["10 10", "20 10", "30 10", "40 10", "50 10", "60 10", "70 10", "80 10", "90 10", "90 20", "80 20", "70 20", "60 20", "50 20", "40 20", "30 20", "20 20", "10 20", "10 30", "20 30", "30 30", "40 30", "50 30", "60 30", "70 30", "80 30", "90 30", "90 40", "80 40", "70 40", "60 40", "50 40", "40 40", "30 40", "20 40", "10 40", "10 50", "20 50", "30 50", "40 50", "50 50", "60 50", "70 50", "80 50", "90 50", "90 60", "80 60", "70 60", "60 60", "50 60", "40 60", "30 60", "20 60", "10 60", "10 70", "20 70", "30 70", "40 70", "50 70", "60 70", "70 70", "80 70", "90 70", "90 80", "80 80", "70 80", "60 80", "50 80", "40 80", "30 80", "20 80", "10 80", "10 90", "20 90", "30 90", "40 90", "50 90", "60 90", "70 90", "80 90", "90 90"];
 var coor_death = ["20 10", "30 10", "40 10", "50 10", "60 10", "70 10", "80 10", "90 10", "90 20", "80 20", "70 20", "60 20", "50 20", "40 20", "30 20", "20 20", "10 20", "10 30", "20 30", "30 30", "40 30", "50 30", "60 30", "70 30", "80 30", "90 30", "90 40", "80 40", "70 40", "60 40", "50 40", "40 40", "30 40", "20 40", "10 40", "10 50", "20 50", "30 50", "40 50", "50 50", "60 50", "70 50", "80 50", "90 50", "90 60", "80 60", "70 60", "60 60", "50 60", "40 60", "30 60", "20 60", "10 60", "10 70", "20 70", "30 70", "40 70", "50 70", "60 70", "70 70", "80 70", "90 70", "90 80", "80 80", "70 80", "60 80", "50 80", "40 80", "30 80", "20 80", "10 80", "10 90", "20 90", "30 90", "40 90", "50 90", "60 90", "70 90"];
@@ -330,7 +334,9 @@ var g2 = document.getElementById("g2");
 var div1 = document.getElementById("div1");
 var div2 = document.getElementById("div2");
 var dicep1;
+var money1=0;
 var dicep2;
+var money2=0;
 var positionp1 = 0;
 var positionp2 = 0;
 var rules = document.getElementById("rules");
@@ -413,6 +419,8 @@ function p1play() {
     audio_dice.play();
     bp1.style.opacity = 0.25;
     dicep1 = Math.round(Math.random() * 5) + 1;
+	money1=money1+dicep1;
+	gold1.innerHTML=money1+" 💰";
     rp1.innerHTML = dicep1;
     rp2.innerHTML = "-";
     if (dicep1 === 1) {
@@ -462,7 +470,9 @@ function p2play() {
     audio_dice.play();
     bp2.style.opacity = 0.25;
     dicep2 = Math.round(Math.random() * 5) + 1;
-    rp2.innerHTML = dicep2;
+	money2=money2+dicep2;
+    gold2.innerHTML=money2+" 💰";
+	rp2.innerHTML = dicep2;
     rp1.innerHTML = "-";
     if (dicep2 === 1) {
         positionp2 = positionp2 + dicep2;

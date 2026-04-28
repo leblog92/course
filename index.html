@@ -8,7 +8,6 @@
 html,body{height:100%;user-select:none;margin:0;padding:0;}
 body{font-family:monospace,sans-serif;text-align:center;overflow:hidden;background:#bbb;transition:6s;}
 svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
-
 #layout{display:flex;align-items:flex-start;justify-content:center;gap:10px;padding:8px;}
 .side-panel{width:170px;flex-shrink:0;visibility:hidden;opacity:0;transition:opacity 3s;}
 .side-panel.visible{visibility:visible;opacity:1;}
@@ -31,44 +30,44 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
   font-size:.78em;cursor:pointer;background:#222;color:#ccc;border:1px solid #3a3a3a;border-radius:3px;text-align:left;}
 .shop-btn:disabled{opacity:.28;cursor:not-allowed;}
 .shop-btn.owned{border-color:gold;color:gold;}
-/* whole shop section dims when not your turn */
-.shop-inactive .shop-btn{ opacity:.18 !important; pointer-events:none; }
-
+.shop-inactive{opacity:.18;pointer-events:none;}
 #statusBar{background:#111;color:#aaa;font-size:.85em;padding:4px 10px;min-height:1.5em;
   width:500px;margin:0 auto;box-sizing:border-box;border:1px solid #333;border-top:none;}
 #before{text-align:center;margin:3px 0;}
-
-/* death circles highlight */
-.death-probe{transition:opacity .15s;}
-
-/* help btn */
-#helpBtn{position:fixed;left:10px;top:10px;width:28px;height:28px;border-radius:50%;
-  background:#333;color:#ccc;border:1px solid #666;font-size:15px;cursor:pointer;z-index:100;
-  opacity:.7;transition:opacity .3s;display:flex;align-items:center;justify-content:center;}
-#helpBtn:hover{opacity:1;}
-
-/* modal */
-#helpModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;overflow-y:auto;padding:20px;}
+#helpBtn,#dbgBtn{position:fixed;width:28px;height:28px;border-radius:50%;background:#333;color:#ccc;
+  border:1px solid #666;font-size:15px;cursor:pointer;z-index:100;opacity:.7;transition:opacity .3s;
+  display:flex;align-items:center;justify-content:center;}
+#helpBtn{left:10px;top:10px;}#helpBtn:hover{opacity:1;}
+#dbgBtn{left:10px;top:46px;}#dbgBtn:hover{opacity:1;}
+#helpModal,#dbgModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:200;overflow-y:auto;padding:20px;}
 .modal-inner{background:#1a1a1a;color:#ccc;border:1px solid #444;border-radius:8px;
-  max-width:500px;margin:0 auto;padding:20px;font-size:.85em;line-height:1.6;}
+  max-width:520px;margin:0 auto;padding:20px;font-size:.85em;line-height:1.6;}
 .modal-inner h3{color:#fff;margin-top:0;}
 .modal-inner table{width:100%;border-collapse:collapse;margin:5px 0;}
 .modal-inner td{padding:2px 6px;vertical-align:top;}
 .modal-inner td:first-child{white-space:nowrap;}
-#closeHelp{float:right;background:#444;color:#fff;border:none;border-radius:4px;padding:4px 10px;cursor:pointer;font-size:14px;}
-
-/* SVG transitions */
+#closeHelp,#closeDbg{float:right;background:#444;color:#fff;border:none;border-radius:4px;
+  padding:4px 10px;cursor:pointer;font-size:14px;margin-bottom:6px;}
+/* debug panel */
+.dbg-section{margin:8px 0;padding:6px;background:#111;border-radius:4px;border:1px solid #333;}
+.dbg-section h4{color:#888;margin:0 0 5px;font-size:.85em;}
+.dbg-row{display:flex;gap:4px;flex-wrap:wrap;margin:3px 0;}
+.dbg-btn{padding:3px 8px;font-size:.75em;cursor:pointer;background:#2a2a2a;color:#ccc;
+  border:1px solid #444;border-radius:3px;}
+.dbg-btn:hover{background:#333;}
+.dbg-input{width:40px;padding:2px 4px;background:#111;color:#ccc;border:1px solid #444;border-radius:3px;font-size:.8em;text-align:center;}
 #skull{transition:.5s;}
-#g1,#g2{transition:.5s linear;}
+#g1,#g2{transition:.12s linear;}
 #gstart{transition:3s;}
 #iback{transition:3s;}
 </style>
 </head>
 <body>
 <audio id="tune" loop><source src="music.mp3" type="audio/mpeg"></audio>
-
 <button id="helpBtn" onclick="document.getElementById('helpModal').style.display='block'">?</button>
+<button id="dbgBtn"  onclick="document.getElementById('dbgModal').style.display='block'">🔧</button>
 
+<!-- HELP MODAL -->
 <div id="helpModal">
 <div class="modal-inner">
   <button id="closeHelp" onclick="document.getElementById('helpModal').style.display='none'">✕ Fermer</button>
@@ -81,7 +80,7 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
     <tr><td>💀</td><td>Mort sur votre case → retour départ (priorité absolue)</td></tr>
     <tr><td>🟡</td><td>Cercle jaune → rejoue immédiatement</td></tr>
     <tr><td>🟢</td><td>Cercle vert → échange les positions</td></tr>
-    <tr><td>🔵</td><td>Portail → téléporte vers l'autre portail</td></tr>
+    <tr><td>🔵/🟠</td><td>Portail → téléporte vers l'autre portail (aller simple)</td></tr>
   </table>
   <b>Tuiles spéciales (usage unique)</b>
   <table>
@@ -97,6 +96,69 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
     <tr><td>💣 20💰</td><td>Poser une bombe sur le plateau</td></tr>
   </table>
   <p style="color:#555;font-size:.85em;margin-bottom:0">Les effets se combinent. F5 pour redémarrer.</p>
+</div>
+</div>
+
+<!-- DEBUG MODAL -->
+<div id="dbgModal">
+<div class="modal-inner">
+  <button id="closeDbg" onclick="document.getElementById('dbgModal').style.display='none'">✕ Fermer</button>
+  <h3>🔧 Debug / Test</h3>
+
+  <div class="dbg-section">
+    <h4>📍 Téléporter joueur</h4>
+    <div class="dbg-row">
+      J1 → case <input id="dbgP1pos" class="dbg-input" type="number" min="0" max="80" value="0">
+      <button class="dbg-btn" onclick="dbgTeleport(1)">Go P1</button>
+      &nbsp; J2 → case <input id="dbgP2pos" class="dbg-input" type="number" min="0" max="80" value="0">
+      <button class="dbg-btn" onclick="dbgTeleport(2)">Go P2</button>
+    </div>
+  </div>
+
+  <div class="dbg-section">
+    <h4>🎲 Forcer le prochain dé</h4>
+    <div class="dbg-row">
+      Valeur <input id="dbgDice" class="dbg-input" type="number" min="1" max="20" value="1">
+      <button class="dbg-btn" onclick="dbgForceDice()">Forcer</button>
+      <button class="dbg-btn" onclick="forcedDice=-1;setStatus('Dé libre.')">Libérer</button>
+    </div>
+    <div id="dbgDiceStatus" style="color:#666;font-size:.8em;margin-top:3px">Dé libre</div>
+  </div>
+
+  <div class="dbg-section">
+    <h4>💥 Déclencher un effet</h4>
+    <div class="dbg-row">
+      Sur joueur <select id="dbgEffectPlayer" style="background:#111;color:#ccc;border:1px solid #444;border-radius:3px;padding:2px;">
+        <option value="1">J1</option><option value="2">J2</option>
+      </select>
+    </div>
+    <div class="dbg-row">
+      <button class="dbg-btn" onclick="dbgEffect('death')">💀 Mort</button>
+      <button class="dbg-btn" onclick="dbgEffect('bonus')">🟡 Bonus</button>
+      <button class="dbg-btn" onclick="dbgEffect('swap')">🟢 Swap</button>
+      <button class="dbg-btn" onclick="dbgEffect('portal')">🌀 Portail</button>
+      <button class="dbg-btn" onclick="dbgEffect('bomb')">💣 Bombe</button>
+      <button class="dbg-btn" onclick="dbgEffect('gift')">🎁 Cadeau</button>
+      <button class="dbg-btn" onclick="dbgEffect('trap')">🚀 Missile</button>
+      <button class="dbg-btn" onclick="dbgEffect('vortex')">🌀 Vortex</button>
+      <button class="dbg-btn" onclick="dbgEffect('win')">🏆 Win</button>
+    </div>
+  </div>
+
+  <div class="dbg-section">
+    <h4>🗺️ Positions des tuiles</h4>
+    <div id="dbgTileMap" style="font-size:.75em;color:#888;line-height:1.8;"></div>
+  </div>
+
+  <div class="dbg-section">
+    <h4>💰 Donner des pièces</h4>
+    <div class="dbg-row">
+      <button class="dbg-btn" onclick="dbgAddMoney(1,50)">+50💰 J1</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(2,50)">+50💰 J2</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(1,200)">+200💰 J1</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(2,200)">+200💰 J2</button>
+    </div>
+  </div>
 </div>
 </div>
 
@@ -127,13 +189,11 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
         <feGaussianBlur stdDeviation="0.25" in="SourceGraphic"/>
       </filter>
     </defs>
-
     <rect width="100" height="100" fill="#2d2d2d"/>
     <image xlink:href="tunnel.gif" width="100" height="100" opacity="0.4">
       <animate attributeName="opacity" values="0.4;0.2;0.4" begin="0s" dur="1.2s" repeatCount="indefinite"/>
     </image>
     <image id="iback" xlink:href="win.gif" width="100" height="100" opacity="0"/>
-
     <!-- Track -->
     <path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L91 90"
           fill="none" stroke="#000" stroke-width="2"/>
@@ -141,31 +201,27 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
           fill="none" stroke="#000" stroke-width="6" stroke-dasharray="0 10" stroke-linecap="round"/>
     <path d="m10 10L90 10L90 20L10 20L10 30L90 30L90 40L10 40L10 50L90 50L90 60L10 60L10 70L90 70L90 80L10 80L10 90L91 90"
           fill="none" stroke="#555" stroke-width="2" stroke-dasharray="0 10" stroke-linecap="round"/>
-
     <!-- Gold bonus dots -->
     <g id="bonus1"><circle cx="0" cy="0" r="1.3" fill="gold" filter="url(#blur)"/></g>
     <g id="bonus2"><circle cx="0" cy="0" r="1.3" fill="gold" filter="url(#blur)"/></g>
     <g id="bonus3"><circle cx="0" cy="0" r="1.3" fill="gold" filter="url(#blur)"/></g>
     <g id="bonus4"><circle cx="0" cy="0" r="1.3" fill="gold" filter="url(#blur)"/></g>
     <g id="bonus5"><circle cx="0" cy="0" r="1.3" fill="gold" filter="url(#blur)"/></g>
-
-    <!-- Swap dots (green) -->
+    <!-- Swap dots (green, fixed positions) -->
     <g transform="translate(50 50)"><circle cx="0" cy="0" r="1.3" fill="lime" filter="url(#blur)">
       <animate attributeName="opacity" values="1;.3;1" dur=".7s" repeatCount="indefinite"/>
     </circle></g>
     <g transform="translate(80 90)"><circle cx="0" cy="0" r="1.3" fill="lime" filter="url(#blur)">
       <animate attributeName="opacity" values="1;.3;1" dur=".7s" begin=".35s" repeatCount="indefinite"/>
     </circle></g>
-
-    <!-- Portal A (blue) and Portal B (orange) — rotation driven by JS on inner spin group -->
+    <!-- Portals (outer g = position, inner spin g = JS rotation) -->
     <g id="portalA"><g id="portalA_spin">
       <image xlink:href="blue_portal.png" x="-3" y="-3" width="6" height="6" filter="url(#blur)"/>
     </g></g>
     <g id="portalB"><g id="portalB_spin">
       <image xlink:href="orange_portal.png" x="-3" y="-3" width="6" height="6" filter="url(#blur)"/>
     </g></g>
-
-    <!-- Special tiles (parked off-screen, moved by JS) -->
+    <!-- Special tiles -->
     <g id="tileBomb1"><text x="0" y=".8" font-size="4.5" dominant-baseline="middle" text-anchor="middle">💣</text></g>
     <g id="tileBomb2"><text x="0" y=".8" font-size="4.5" dominant-baseline="middle" text-anchor="middle">💣</text></g>
     <g id="tileGift"><text x="0" y=".8" font-size="4.5" dominant-baseline="middle" text-anchor="middle">🎁</text></g>
@@ -173,96 +229,97 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
     <g id="tileVortex"><g id="tileVortex_spin">
       <text x="0" y=".8" font-size="5" dominant-baseline="middle" text-anchor="middle">🌀</text>
     </g></g>
-
-    <!-- Death probe circles (hidden until death_move) -->
+    <!-- Death probe circles -->
     <g id="deathProbes" opacity="0">
-      <circle id="dp0" cx="0" cy="0" r="2" fill="none" stroke="red" stroke-width=".4" opacity="0"/>
-      <circle id="dp1" cx="0" cy="0" r="2" fill="none" stroke="red" stroke-width=".4" opacity="0"/>
-      <circle id="dp2" cx="0" cy="0" r="2" fill="none" stroke="red" stroke-width=".4" opacity="0"/>
-      <circle id="dp3" cx="0" cy="0" r="2" fill="none" stroke="red" stroke-width=".4" opacity="0"/>
-      <circle id="dp4" cx="0" cy="0" r="2" fill="none" stroke="red" stroke-width=".4" opacity="0"/>
-      <circle id="dp5" cx="0" cy="0" r="2" fill="none" stroke="red" stroke-width=".4" opacity="0"/>
+      <circle id="dp0" cx="0" cy="0" r="1.8" fill="none" stroke="#f44" stroke-width=".4" opacity="0"/>
+      <circle id="dp1" cx="0" cy="0" r="1.8" fill="none" stroke="#f44" stroke-width=".4" opacity="0"/>
+      <circle id="dp2" cx="0" cy="0" r="1.8" fill="none" stroke="#f44" stroke-width=".4" opacity="0"/>
+      <circle id="dp3" cx="0" cy="0" r="1.8" fill="none" stroke="#f44" stroke-width=".4" opacity="0"/>
+      <circle id="dp4" cx="0" cy="0" r="1.8" fill="none" stroke="#f44" stroke-width=".4" opacity="0"/>
+      <circle id="dp5" cx="0" cy="0" r="1.8" fill="none" stroke="#f44" stroke-width=".4" opacity="0"/>
     </g>
-    <!-- Random number display during death sequence -->
     <text id="deathNum" x="50" y="50" font-size="18" dominant-baseline="middle" text-anchor="middle"
           fill="red" opacity="0" font-weight="bold"></text>
-
     <!-- Death skull -->
     <g id="skull"><text id="sk" x="0" y=".8" font-size="5" dominant-baseline="middle" text-anchor="middle" fill="white">💀</text></g>
-
     <!-- Players -->
     <g id="g1"><g><circle id="c1" cx="0" cy="-2" fill="royalblue" r="1.3"/>
-      <animateTransform attributeName="transform" attributeType="xml" type="rotate"
-        values="0 0 0;360 0 0" begin="0s" dur="5s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0;360 0 0" begin="0s" dur="5s" repeatCount="indefinite"/>
     </g></g>
     <g id="g2"><g><circle id="c2" cx="0" cy="2" fill="crimson" r="1.3"/>
-      <animateTransform attributeName="transform" attributeType="xml" type="rotate"
-        values="0 0 0;360 0 0" begin="0s" dur="5s" repeatCount="indefinite"/>
+      <animateTransform attributeName="transform" attributeType="xml" type="rotate" values="0 0 0;360 0 0" begin="0s" dur="5s" repeatCount="indefinite"/>
     </g></g>
 
-    <!-- ── SPLASH SCREENS ── all parked at translate(-200,0), slide to translate(0,0) -->
-    <!-- Each is a full 100×100 overlay -->
-    <g id="splashBonus"   style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(0,0,0,.75)"/>
+    <!-- SPLASH SCREENS — parked off-screen left at x=-200, slide in to x=0 -->
+    <!-- SPLASH_IMG_OPACITY = 0.8 applied to all background images -->
+    <g id="splashBonus" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_bonus.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">👍</text>
-      <text x="50" y="58" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">REJOUE !</text>
+      <text x="50" y="72" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">REJOUE !</text>
     </g>
-    <g id="splashDead"    style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(0,0,0,.82)"/>
-      <text x="50" y="35" font-size="16" dominant-baseline="middle" text-anchor="middle">💀</text>
-      <text x="50" y="57" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="red">VOUS ÊTES MORT</text>
-      <text x="50" y="67" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#aaa">mais tout espoir n'est pas perdu</text>
+    <g id="splashDead" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_dead.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+      <text x="50" y="35" font-size="14" dominant-baseline="middle" text-anchor="middle">💀</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="red">VOUS ÊTES MORT</text>
+      <text x="50" y="72" font-size="3.5" dominant-baseline="middle" text-anchor="middle" fill="#ccc">mais tout espoir n'est pas perdu</text>
     </g>
-    <g id="splashSwap"    style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(0,50,0,.8)"/>
+    <g id="splashSwap" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_exchange.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="14" dominant-baseline="middle" text-anchor="middle">😵‍💫</text>
-      <text x="50" y="58" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="lime">ÉCHANGE !</text>
+      <text x="50" y="72" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="lime">ÉCHANGE !</text>
     </g>
-    <g id="splashPortal"  style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(0,0,0,.9)"/>
-      <image xlink:href="portal1.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+    <g id="splashPortal" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_portal.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="82" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="white">PORTAIL !</text>
     </g>
-    <g id="splashBomb"    style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(60,0,0,.85)"/>
-      <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">💣</text>
+    <g id="splashBomb" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_bomb.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+      <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">💣</text>
       <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="crimson">BOOM !</text>
-      <text id="splashBombTxt" x="50" y="72" font-size="4.5" dominant-baseline="middle" text-anchor="middle" fill="#f88"></text>
+      <text id="splashBombTxt" x="50" y="72" font-size="4" dominant-baseline="middle" text-anchor="middle" fill="#f88"></text>
     </g>
-    <g id="splashGift"    style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(0,40,50,.85)"/>
-      <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">🎁</text>
+    <g id="splashGift" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_cadeau.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+      <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🎁</text>
       <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="cyan">CADEAU !</text>
       <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#8ff">Prochain lancer : 1D20</text>
     </g>
-    <g id="splashTrap"    style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(50,25,0,.85)"/>
-      <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">🚀</text>
+    <g id="splashTrap" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_trap.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+      <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🚀</text>
       <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="orange">MISSILE !</text>
-      <text id="splashTrapTxt" x="50" y="72" font-size="4.5" dominant-baseline="middle" text-anchor="middle" fill="#fa8"></text>
+      <text id="splashTrapTxt" x="50" y="72" font-size="4" dominant-baseline="middle" text-anchor="middle" fill="#fa8"></text>
     </g>
-    <g id="splashVortex"  style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(20,20,20,.9)"/>
-      <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">🌀</text>
+    <g id="splashVortex" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_vortex.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+      <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🌀</text>
       <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="white">VORTEX !</text>
       <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#aaa">Tout le monde éparpillé !</text>
     </g>
-    <g id="splashShield"  style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(20,20,60,.85)"/>
-      <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">🛡️</text>
+    <g id="splashShield" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(20,20,60,.9)"/>
+      <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🛡️</text>
       <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="#aaf">AMULETTE !</text>
       <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#88f">La mort est annulée</text>
     </g>
-    <g id="splashWin"     style="transition:.4s" transform="translate(-200 0)">
-      <rect width="100" height="100" fill="rgba(40,30,0,.9)"/>
-      <text x="50" y="35" font-size="16" dominant-baseline="middle" text-anchor="middle">🏆</text>
-      <text x="50" y="58" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">VICTOIRE !</text>
+    <g id="splashWin" style="transition:.4s" transform="translate(-200 0)">
+      <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
+      <image xlink:href="splash_win.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
+      <text x="50" y="35" font-size="14" dominant-baseline="middle" text-anchor="middle">🏆</text>
+      <text x="50" y="57" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">VICTOIRE !</text>
       <text id="splashWinTxt" x="50" y="70" font-size="4.5" dominant-baseline="middle" text-anchor="middle" fill="#fc0"></text>
     </g>
-
-    <!-- Start screen (on top of everything) -->
+    <!-- START SCREEN -->
     <g id="gstart" transform="translate(0 0)" style="cursor:pointer;transition:3s;">
-      <image xlink:href="door.jpg" width="100" height="100" opacity="1"/>
+      <image xlink:href="door.jpg" width="100" height="100"/>
       <image xlink:href="title.png" width="100" height="100" filter="url(#fecolor)"/>
       <text x="51" y="51" dominant-baseline="middle" text-anchor="middle" fill="#000" font-size="12" filter="url(#blur)">[START]</text>
       <text x="50" y="50" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="12">[START]</text>
@@ -283,13 +340,12 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
       <div id="shop2"></div>
     </div>
   </div>
-
-</div><!-- layout -->
+</div>
 
 <script>
-// ═══════════════════════════════════════════════
-// COORDINATE ARRAYS
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// COORDS
+// ══════════════════════════════════════
 var COOR=["10 10","20 10","30 10","40 10","50 10","60 10","70 10","80 10","90 10",
   "90 20","80 20","70 20","60 20","50 20","40 20","30 20","20 20","10 20",
   "10 30","20 30","30 30","40 30","50 30","60 30","70 30","80 30","90 30",
@@ -300,7 +356,6 @@ var COOR=["10 10","20 10","30 10","40 10","50 10","60 10","70 10","80 10","90 10
   "90 80","80 80","70 80","60 80","50 80","40 80","30 80","20 80","10 80",
   "10 90","20 90","30 90","40 90","50 90","60 90","70 90","80 90","90 90"];
 
-// Death uses same grid but skip forbidden squares
 var COOR_DEATH=["20 10","30 10","40 10","50 10","60 10","70 10","80 10","90 10",
   "90 20","80 20","70 20","60 20","50 20","40 20","30 20","20 20","10 20",
   "10 30","20 30","30 30","40 30","50 30","60 30","70 30","80 30","90 30",
@@ -311,29 +366,23 @@ var COOR_DEATH=["20 10","30 10","40 10","50 10","60 10","70 10","80 10","90 10",
   "90 80","80 80","70 80","60 80","50 80","40 80","30 80","20 80","10 80",
   "10 90","20 90","30 90","40 90","50 90","60 90","70 90"];
 
-// Forbidden COOR indices: 0=start, 40=swap1(50 50), 79=swap2(80 90), 80=finish(90 90)
 var FORBIDDEN=[0,40,79,80];
-
 function rndPos(excl){
-  excl=excl||[];
-  var p;
+  excl=excl||[]; var p;
   do{p=Math.floor(Math.random()*78)+1;}
   while(excl.indexOf(p)!==-1||FORBIDDEN.indexOf(p)!==-1);
   return p;
 }
-// Portal zone placement: first half 1-39 (before exch1=40), second half 41-78 (after exch1, before exch2=79)
-function rndPosZone(min,max,excl){
-  excl=excl||[];
-  var p,tries=0;
-  do{p=min+Math.floor(Math.random()*(max-min+1));tries++;}
-  while((excl.indexOf(p)!==-1||FORBIDDEN.indexOf(p)!==-1)&&tries<200);
+function rndPosZone(mn,mx,excl){
+  excl=excl||[]; var p,t=0;
+  do{p=mn+Math.floor(Math.random()*(mx-mn+1));t++;}
+  while((excl.indexOf(p)!==-1||FORBIDDEN.indexOf(p)!==-1)&&t<300);
   return p;
 }
 
-// ═══════════════════════════════════════════════
-// TILE POSITIONS (all unique, none on forbidden)
-// ═══════════════════════════════════════════════
-// blue_pos in first half (1-39), orange_pos in second half (41-78)
+// ══════════════════════════════════════
+// TILE POSITIONS
+// ══════════════════════════════════════
 var blue_pos=rndPosZone(1,39,[]);
 var orange_pos=rndPosZone(41,78,[blue_pos]);
 var posb1=rndPos([blue_pos,orange_pos]);
@@ -341,16 +390,17 @@ var posb2=rndPos([blue_pos,orange_pos,posb1]);
 var posb3=rndPos([blue_pos,orange_pos,posb1,posb2]);
 var posb4=rndPos([blue_pos,orange_pos,posb1,posb2,posb3]);
 var posb5=rndPos([blue_pos,orange_pos,posb1,posb2,posb3,posb4]);
-var posBomb1=rndPos([blue_pos,orange_pos,posb1,posb2,posb3,posb4,posb5]);
-var posBomb2=rndPos([blue_pos,orange_pos,posb1,posb2,posb3,posb4,posb5,posBomb1]);
-var posGift=rndPos([blue_pos,orange_pos,posb1,posb2,posb3,posb4,posb5,posBomb1,posBomb2]);
-var posTrap=rndPos([blue_pos,orange_pos,posb1,posb2,posb3,posb4,posb5,posBomb1,posBomb2,posGift]);
-var posVortex=rndPos([blue_pos,orange_pos,posb1,posb2,posb3,posb4,posb5,posBomb1,posBomb2,posGift,posTrap]);
+var all5=[blue_pos,orange_pos,posb1,posb2,posb3,posb4,posb5];
+var posBomb1=rndPos(all5.slice());
+var posBomb2=rndPos(all5.concat([posBomb1]));
+var posGift=rndPos(all5.concat([posBomb1,posBomb2]));
+var posTrap=rndPos(all5.concat([posBomb1,posBomb2,posGift]));
+var posVortex=rndPos(all5.concat([posBomb1,posBomb2,posGift,posTrap]));
 var pos_death=Math.floor(Math.random()*COOR_DEATH.length);
 
-// ═══════════════════════════════════════════════
-// DOM REFS
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// DOM
+// ══════════════════════════════════════
 var tune=document.getElementById("tune");
 var bp1=document.getElementById("bp1"),bp2=document.getElementById("bp2");
 var ip1=document.getElementById("ip1"),ip2=document.getElementById("ip2");
@@ -359,26 +409,22 @@ var pos1El=document.getElementById("pos1"),pos2El=document.getElementById("pos2"
 var diceP1=document.getElementById("diceP1"),diceP2=document.getElementById("diceP2");
 var p1name=document.getElementById("p1name"),p2name=document.getElementById("p2name");
 var statusBar=document.getElementById("statusBar");
-var iback=document.getElementById("iback");
-var gstart=document.getElementById("gstart");
+var iback=document.getElementById("iback"),gstart=document.getElementById("gstart");
 var skull=document.getElementById("skull"),sk=document.getElementById("sk");
 var c1=document.getElementById("c1"),c2=document.getElementById("c2");
 var g1=document.getElementById("g1"),g2=document.getElementById("g2");
 var panelP1=document.getElementById("panelP1"),panelP2=document.getElementById("panelP2");
 var boxP1=document.getElementById("boxP1"),boxP2=document.getElementById("boxP2");
 var bonus1=document.getElementById("bonus1"),bonus2=document.getElementById("bonus2");
-var bonus3=document.getElementById("bonus3"),bonus4=document.getElementById("bonus4");
-var bonus5=document.getElementById("bonus5");
+var bonus3=document.getElementById("bonus3"),bonus4=document.getElementById("bonus4"),bonus5=document.getElementById("bonus5");
 var portalA=document.getElementById("portalA"),portalB=document.getElementById("portalB");
 var portalA_spin=document.getElementById("portalA_spin"),portalB_spin=document.getElementById("portalB_spin");
 var tileBomb1=document.getElementById("tileBomb1"),tileBomb2=document.getElementById("tileBomb2");
 var tileGift=document.getElementById("tileGift"),tileTrap=document.getElementById("tileTrap");
-var tileVortex=document.getElementById("tileVortex");
+var tileVortex=document.getElementById("tileVortex"),tileVortex_spin=document.getElementById("tileVortex_spin");
 var deathProbes=document.getElementById("deathProbes"),deathNum=document.getElementById("deathNum");
-var dp=[document.getElementById("dp0"),document.getElementById("dp1"),document.getElementById("dp2"),
-        document.getElementById("dp3"),document.getElementById("dp4"),document.getElementById("dp5")];
+var dp=[0,1,2,3,4,5].map(function(i){return document.getElementById("dp"+i);});
 var svgBoard=document.getElementById("svgBoard");
-// Splashes
 var splashBonus=document.getElementById("splashBonus");
 var splashDead=document.getElementById("splashDead");
 var splashSwap=document.getElementById("splashSwap");
@@ -390,9 +436,9 @@ var splashVortex=document.getElementById("splashVortex");
 var splashShield=document.getElementById("splashShield");
 var splashWin=document.getElementById("splashWin"),splashWinTxt=document.getElementById("splashWinTxt");
 
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 // AUDIO
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 var audio_open=new Audio("open.mp3");
 var audio_dice=new Audio("dice.mp3");
 var audio_bonus=new Audio("bonus.mp3");
@@ -405,80 +451,74 @@ var audio_portal=new Audio("portal.mp3");
 var audio_bomb=new Audio("bomb.mp3");
 var audio_vortex=new Audio("vortex.mp3");
 var audio_random=new Audio("random.mp3");
+var audio_trap=new Audio("trap.mp3");
 
-// ═══════════════════════════════════════════════
-// GAME STATE
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
 var positionp1=0,positionp2=0,money1=0,money2=0,first;
 var p1_d10=false,p2_d10=false,p1_turbo=false,p2_turbo=false,p1_shield=false,p2_shield=false;
-var portalUsedThisTurn=false; // reset each new roll
+var portalUsedThisTurn=false;
 var placingBomb=0,shopBombs=[];
+var forcedDice=-1; // debug: -1 = free
 var SHOP={shield:15,turbo:10,bomb:20};
 var RESOLVE_DEPTH_MAX=6;
+var MOVE_STEP_MS=120; // ms per step in animated movement
 
-// ═══════════════════════════════════════════════
-// SPLASH HELPER — sequential queue for combos
-// ═══════════════════════════════════════════════
-var splashQueue=[];
-var splashRunning=false;
-
-function queueSplash(el,duration,setup){
-  splashQueue.push({el:el,duration:duration||1800,setup:setup||null});
+// ══════════════════════════════════════
+// SPLASH QUEUE
+// ══════════════════════════════════════
+var splashQueue=[],splashRunning=false;
+function queueSplash(el,dur,setup){
+  splashQueue.push({el:el,dur:dur||1800,setup:setup||null});
   if(!splashRunning)runNextSplash();
 }
-
 function runNextSplash(){
-  if(splashQueue.length===0){splashRunning=false;return;}
+  if(!splashQueue.length){splashRunning=false;return;}
   splashRunning=true;
-  var item=splashQueue.shift();
-  if(item.setup)item.setup();
-  item.el.setAttribute("transform","translate(0 0)");
+  var it=splashQueue.shift();
+  if(it.setup)it.setup();
+  it.el.setAttribute("transform","translate(0 0)");
   setTimeout(function(){
-    item.el.setAttribute("transform","translate(-200 0)");
-    setTimeout(runNextSplash,400); // gap between splashes
-  },item.duration);
+    it.el.setAttribute("transform","translate(-200 0)");
+    setTimeout(runNextSplash,400);
+  },it.dur);
 }
 
-// ═══════════════════════════════════════════════
-// PORTAL ROTATION (JS-driven, avoids SVG transform conflict)
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// ROTATION (portals + vortex)
+// ══════════════════════════════════════
 var portalAngle=0;
-var tileVortex_spin=document.getElementById("tileVortex_spin");
 setInterval(function(){
   portalAngle=(portalAngle+3)%360;
   portalA_spin.setAttribute("transform","rotate("+portalAngle+" 0 0)");
-  portalB_spin.setAttribute("transform","rotate("+(360-portalAngle)+" 0 0)"); // counter-rotate for distinction
+  portalB_spin.setAttribute("transform","rotate("+(360-portalAngle)+" 0 0)");
   if(tileVortex_spin)tileVortex_spin.setAttribute("transform","rotate("+portalAngle+" 0 0)");
 },33);
 
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 // INIT
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 function init(){
   gstart.removeEventListener("click",init);
   document.body.style.backgroundColor="#111";
   document.getElementById("helpModal").style.display="none";
-  audio_open.play();
-  tune.volume=0.1;tune.play();
-  gstart.style.transition="3s";
+  audio_open.play(); tune.volume=0.1; tune.play();
   gstart.setAttribute("transform","translate(0 100)");
   document.getElementById("before").innerHTML=
-    '<button onclick="location.reload()" style="margin:3px;padding:3px 10px;font-size:.8em;opacity:.6;cursor:pointer;background:#222;color:#aaa;border:1px solid #444;border-radius:4px">↺ Reset</button>';
-  panelP1.classList.add("visible");
-  panelP2.classList.add("visible");
+    '<button onclick="location.reload()" style="padding:3px 10px;font-size:.8em;opacity:.6;cursor:pointer;background:#222;color:#aaa;border:1px solid #444;border-radius:4px">↺ Reset</button>';
+  panelP1.classList.add("visible"); panelP2.classList.add("visible");
   setStatus(p1name.textContent+" lance le dé");
-  setTurn(1);
-  updateShop();
+  setTurn(1); updateShop();
 }
 
-// ═══════════════════════════════════════════════
-// UI
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════
 function setStatus(m){statusBar.innerHTML=m;}
 
 function setTurn(p){
-  bp1.removeEventListener("click",p1play);
-  bp2.removeEventListener("click",p2play);
+  bp1.removeEventListener("click",p1play); bp2.removeEventListener("click",p2play);
   if(p===1){
     bp1.className="roll-btn active"; bp2.className="roll-btn inactive";
     boxP1.classList.add("my-turn"); boxP2.classList.remove("my-turn");
@@ -491,16 +531,45 @@ function setTurn(p){
   updateShop();
 }
 
-function moveToken(p){
-  if(p===1){
-    c1.setAttribute("r","2.2");setTimeout(function(){c1.setAttribute("r","1.3");},600);
-    g1.setAttribute("transform","translate("+COOR[positionp1]+")");
-    pos1El.textContent=positionp1+"/80";
-  }else{
-    c2.setAttribute("r","2.2");setTimeout(function(){c2.setAttribute("r","1.3");},600);
-    g2.setAttribute("transform","translate("+COOR[positionp2]+")");
-    pos2El.textContent=positionp2+"/80";
+// Animated step-by-step movement along COOR path
+// from: starting index, to: ending index (positionpN already updated)
+// onDone called when animation completes
+function animateMove(player, from, to, onDone){
+  var g=player===1?g1:g2;
+  var c=player===1?c1:c2;
+  var posEl=player===1?pos1El:pos2El;
+  // Clamp to valid range
+  if(to>80)to=80;
+  var steps=to-from;
+  if(steps<=0){
+    // No forward movement (e.g. rolled past end) — jump directly
+    var clamp=Math.min(to,80);
+    g.setAttribute("transform","translate("+COOR[clamp]+")");
+    posEl.textContent=clamp+"/80";
+    if(onDone)onDone(); return;
   }
+  var current=from;
+  c.setAttribute("r","1.8");
+  function step(){
+    current++;
+    if(current>to)current=to;
+    var coord=COOR[Math.min(current,80)];
+    g.setAttribute("transform","translate("+coord+")");
+    posEl.textContent=current+"/80";
+    if(current<to){setTimeout(step,MOVE_STEP_MS);}
+    else{
+      setTimeout(function(){c.setAttribute("r","1.3");if(onDone)onDone();},200);
+    }
+  }
+  setTimeout(step,MOVE_STEP_MS);
+}
+
+// Instant move (for teleport, death reset etc.)
+function snapToken(p){
+  var pos=p===1?positionp1:positionp2;
+  var clamped=Math.min(pos,80);
+  if(p===1){g1.setAttribute("transform","translate("+COOR[clamped]+")");pos1El.textContent=clamped+"/80";}
+  else{g2.setAttribute("transform","translate("+COOR[clamped]+")");pos2El.textContent=clamped+"/80";}
 }
 
 function removeTile(el){el.setAttribute("transform","translate(200 200)");}
@@ -511,26 +580,22 @@ function state(){
   else{ip1.src="p1.png";ip2.src="p2.png";}
 }
 
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 // SHOP
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 function updateShop(){
   var p1on=bp1.className.indexOf("active")!==-1;
   var p2on=bp2.className.indexOf("active")!==-1;
-  var s1=document.getElementById("shop1");
-  var s2=document.getElementById("shop2");
+  var s1=document.getElementById("shop1"),s2=document.getElementById("shop2");
   s1.className=p1on?"":"shop-inactive";
   s2.className=p2on?"":"shop-inactive";
   function mk(lbl,cost,own,dis,fn){
-    var cls="shop-btn"+(own?" owned":"");
-    return'<button class="'+cls+'"'+(dis?" disabled":"")+' onclick="'+fn+'">'+lbl+' '+(own?"✓":cost+"💰")+'</button>';
+    return'<button class="shop-btn'+(own?" owned":"")+'"'+(dis?" disabled":"")+' onclick="'+fn+'">'+lbl+' '+(own?"✓":cost+"💰")+'</button>';
   }
-  s1.innerHTML=
-    mk("🛡️",SHOP.shield,p1_shield,!p1on||p1_shield||money1<SHOP.shield,"buyShield(1)")+
+  s1.innerHTML=mk("🛡️",SHOP.shield,p1_shield,!p1on||p1_shield||money1<SHOP.shield,"buyShield(1)")+
     mk("⚡",SHOP.turbo,p1_turbo,!p1on||p1_turbo||money1<SHOP.turbo,"buyTurbo(1)")+
     mk("💣",SHOP.bomb,false,!p1on||money1<SHOP.bomb,"buyBomb(1)");
-  s2.innerHTML=
-    mk("🛡️",SHOP.shield,p2_shield,!p2on||p2_shield||money2<SHOP.shield,"buyShield(2)")+
+  s2.innerHTML=mk("🛡️",SHOP.shield,p2_shield,!p2on||p2_shield||money2<SHOP.shield,"buyShield(2)")+
     mk("⚡",SHOP.turbo,p2_turbo,!p2on||p2_turbo||money2<SHOP.turbo,"buyTurbo(2)")+
     mk("💣",SHOP.bomb,false,!p2on||money2<SHOP.bomb,"buyBomb(2)");
 }
@@ -540,16 +605,16 @@ function buyShield(p){
   updateShop();
 }
 function buyTurbo(p){
-  if(p===1&&money1>=SHOP.turbo&&!p1_turbo){money1-=SHOP.turbo;p1_turbo=true;gold1.textContent=money1+" 💰";setStatus("⚡ Turbo ! Prochain lancer 1D12 !");}
-  else if(p===2&&money2>=SHOP.turbo&&!p2_turbo){money2-=SHOP.turbo;p2_turbo=true;gold2.textContent=money2+" 💰";setStatus("⚡ Turbo ! Prochain lancer 1D12 !");}
+  if(p===1&&money1>=SHOP.turbo&&!p1_turbo){money1-=SHOP.turbo;p1_turbo=true;gold1.textContent=money1+" 💰";setStatus("⚡ Turbo ! 1D12 !");}
+  else if(p===2&&money2>=SHOP.turbo&&!p2_turbo){money2-=SHOP.turbo;p2_turbo=true;gold2.textContent=money2+" 💰";setStatus("⚡ Turbo ! 1D12 !");}
   updateShop();
 }
 function buyBomb(p){
   var cost=SHOP.bomb;
-  if(p===1&&money1<cost)return;if(p===2&&money2<cost)return;
+  if(p===1&&money1<cost)return; if(p===2&&money2<cost)return;
   if(p===1){money1-=cost;gold1.textContent=money1+" 💰";}
   else{money2-=cost;gold2.textContent=money2+" 💰";}
-  placingBomb=p;setStatus("💣 Cliquez sur une case du plateau !");svgBoard.style.cursor="crosshair";updateShop();
+  placingBomb=p;setStatus("💣 Cliquez sur une case !");svgBoard.style.cursor="crosshair";updateShop();
 }
 function createShopBomb(pos){
   var ns="http://www.w3.org/2000/svg";
@@ -572,232 +637,197 @@ svgBoard.addEventListener("click",function(e){
   gx=Math.max(10,Math.min(90,gx));gy=Math.max(10,Math.min(90,gy));
   var coord=gx+" "+gy;
   if(coord==="90 90"||coord==="80 90"||coord==="50 50"){setStatus("⛔ Case interdite !");return;}
-  var idx=COOR.indexOf(coord);if(idx<0){setStatus("⛔ Case invalide !");return;}
-  createShopBomb(idx);setStatus("💣 Bombe posée !");svgBoard.style.cursor="";placingBomb=0;updateShop();
+  var idx=COOR.indexOf(coord);if(idx<0){setStatus("⛔ Invalide !");return;}
+  createShopBomb(idx);setStatus("💣 Posée !");svgBoard.style.cursor="";placingBomb=0;updateShop();
 });
 
-// ═══════════════════════════════════════════════
-// DEATH SEQUENCE — new suspense mechanic
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// DEATH SEQUENCE
+// random.mp3 plays during probe flash,
+// death.mp3 plays AFTER, when skull moves
+// ══════════════════════════════════════
 function death_move(onDone){
-  audio_death.play();
   first=positionp1>positionp2?positionp1:positionp2;
-
-  // Build 6 candidate COOR positions ahead of the leader (clamped to board)
-  var candidateCOOR=[]; // indices into COOR
-  for(var i=0;i<6;i++){
-    var ci=Math.min(first+i+1, 79); // clamp to before finish (80=finish)
-    candidateCOOR.push(ci);
-  }
-
-  // Map each COOR index to a COOR_DEATH index (by coordinate string match)
-  // If not found in COOR_DEATH, use the nearest valid one
-  var candidateDeath=[]; // indices into COOR_DEATH
-  for(var i=0;i<6;i++){
-    var coord=COOR[candidateCOOR[i]];
-    var di=COOR_DEATH.indexOf(coord);
-    if(di===-1){
-      // fallback: find nearest COOR_DEATH entry to this coordinate
-      di=Math.min(Math.max(0, candidateCOOR[i]-1), COOR_DEATH.length-1);
-    }
-    candidateDeath.push(di);
-  }
-
-  // Place the 6 probe circles at the correct board coordinates
+  // 6 COOR candidates ahead of leader
+  var candCOOR=[];
+  for(var i=0;i<6;i++)candCOOR.push(Math.min(first+i+1,79));
+  // Map each to COOR_DEATH index
+  var candDeath=candCOOR.map(function(ci){
+    var di=COOR_DEATH.indexOf(COOR[ci]);
+    return di===-1?Math.min(Math.max(0,ci-1),COOR_DEATH.length-1):di;
+  });
+  // Show probe circles
   deathProbes.setAttribute("opacity","1");
   for(var j=0;j<6;j++){
-    var parts=COOR[candidateCOOR[j]].split(" ");
-    dp[j].setAttribute("cx",parts[0]);
-    dp[j].setAttribute("cy",parts[1]);
-    dp[j].setAttribute("opacity","0.5");
-    dp[j].setAttribute("stroke","#f44");
-    dp[j].setAttribute("r","1.8");
+    var pt=COOR[candCOOR[j]].split(" ");
+    dp[j].setAttribute("cx",pt[0]);dp[j].setAttribute("cy",pt[1]);
+    dp[j].setAttribute("opacity","0.5");dp[j].setAttribute("stroke","#f44");dp[j].setAttribute("r","1.8");
   }
-
-  // Flash random number for 1200ms
+  // Flash with random.mp3 for 1200ms
   var elapsed=0,interval=120,chosen=0;
   audio_random.play();
   deathNum.setAttribute("opacity","1");
-
-  var flashTimer=setInterval(function(){
+  var timer=setInterval(function(){
     elapsed+=interval;
-    var rndIdx=Math.floor(Math.random()*6);
-    chosen=rndIdx;
-    deathNum.textContent=(rndIdx+1).toString();
+    var ri=Math.floor(Math.random()*6); chosen=ri;
+    deathNum.textContent=(ri+1)+"";
     for(var k=0;k<6;k++){
-      dp[k].setAttribute("stroke",k===rndIdx?"#ff0":"#f44");
-      dp[k].setAttribute("opacity",k===rndIdx?"1":"0.35");
-      dp[k].setAttribute("r",k===rndIdx?"2.8":"1.8");
+      dp[k].setAttribute("stroke",k===ri?"#ff0":"#f44");
+      dp[k].setAttribute("opacity",k===ri?"1":"0.35");
+      dp[k].setAttribute("r",k===ri?"2.8":"1.8");
     }
     if(elapsed>=1200){
-      clearInterval(flashTimer);
+      clearInterval(timer);
       audio_random.pause();audio_random.currentTime=0;
-
-      var finalDI=candidateDeath[chosen];
-      if(finalDI<0)finalDI=0;
-      if(finalDI>=COOR_DEATH.length)finalDI=COOR_DEATH.length-1;
+      var finalDI=candDeath[chosen];
+      if(finalDI<0)finalDI=0; if(finalDI>=COOR_DEATH.length)finalDI=COOR_DEATH.length-1;
       pos_death=finalDI;
-
       setTimeout(function(){
         deathNum.setAttribute("opacity","0");
-        for(var m=0;m<6;m++){dp[m].setAttribute("opacity","0");}
+        for(var m=0;m<6;m++)dp[m].setAttribute("opacity","0");
         deathProbes.setAttribute("opacity","0");
+        // death.mp3 plays NOW, when skull actually moves
+        audio_death.play();
         sk.setAttribute("font-size","10");
         skull.setAttribute("transform","translate("+COOR_DEATH[pos_death]+")");
-        setTimeout(function(){sk.setAttribute("font-size","5");if(onDone)onDone();},500);
+        setTimeout(function(){sk.setAttribute("font-size","5");if(onDone)onDone();},600);
       },400);
     }
   },interval);
 }
 
-// ═══════════════════════════════════════════════
-// RESOLVE POSITION — combo engine
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// RESOLVE POSITION
+// ══════════════════════════════════════
 function resolvePosition(player,endFn,depth){
   depth=depth||0;
   if(depth>=RESOLVE_DEPTH_MAX){state();endFn();return;}
   var pos=player===1?positionp1:positionp2;
-  var coord=COOR[pos];
+  var coord=COOR[Math.min(pos,80)];
   var pname=player===1?p1name.textContent:p2name.textContent;
 
-  // 1. DEATH
+  // 1. DEATH — absolute priority
   if(COOR_DEATH[pos_death]===coord){
-    var shield=player===1?p1_shield:p2_shield;
-    if(shield){
+    if(player===1?p1_shield:p2_shield){
       if(player===1)p1_shield=false;else p2_shield=false;
       setStatus("🛡️ Amulette ! "+pname+" survit !");
       audio_bonus.play();updateShop();
       queueSplash(splashShield,1800);
-      setTimeout(function(){state();endFn();},2400);
-      return;
+      setTimeout(function(){state();endFn();},2400); return;
     }
-    if(player===1)deadp1();else deadp2();
-    return;
+    if(player===1)deadp1();else deadp2(); return;
   }
-
   // 2. WIN
   if(pos>=80){if(player===1)p1win();else p2win();return;}
-
-  // 3. GOLD BONUS
+  // 3. BONUS
   if(pos===posb1||pos===posb2||pos===posb3||pos===posb4||pos===posb5){
     if(player===1)doublep1();else doublep2();return;
   }
-
   // 4. SWAP
   if(coord==="50 50"||coord==="80 90"){xch();endFn();return;}
-
-  // 5. PORTAL — one-way per turn only
-  var newPos=-1;
+  // 5. PORTAL (one way per turn)
   if(!portalUsedThisTurn){
+    var newPos=-1;
     if(coord===COOR[blue_pos])newPos=orange_pos;
     else if(coord===COOR[orange_pos])newPos=blue_pos;
+    if(newPos!==-1){
+      portalUsedThisTurn=true;
+      if(player===1)positionp1=newPos;else positionp2=newPos;
+      setStatus("🌀 Portail ! "+pname+" téléporté !");
+      audio_portal.play();
+      queueSplash(splashPortal,1600);
+      snapToken(player);
+      setTimeout(function(){resolvePosition(player,endFn,depth+1);},2100); return;
+    }
   }
-  if(newPos!==-1){
-    portalUsedThisTurn=true;
-    if(player===1)positionp1=newPos;else positionp2=newPos;
-    setStatus("🌀 Portail ! "+pname+" est téléporté !");
-    audio_portal.play();
-    queueSplash(splashPortal,1600);
-    moveToken(player);
-    setTimeout(function(){resolvePosition(player,endFn,depth+1);},2100);
-    return;
-  }
-
   // 6. BOMB
   var bombHit=false,bombEl=null;
   if(pos===posBomb1){bombEl=tileBomb1;posBomb1=-1;bombHit=true;}
   else if(pos===posBomb2){bombEl=tileBomb2;posBomb2=-1;bombHit=true;}
   else if(checkShopBombs(pos))bombHit=true;
   if(bombHit){
-    var rollback=Math.floor(Math.random()*6)+1;
-    splashBombTxt.textContent=pname+" recule de "+rollback+" cases !";
-    queueSplash(splashBomb,1800);
-    audio_bomb.play();
+    var rb=Math.floor(Math.random()*6)+1;
+    splashBombTxt.textContent=pname+" recule de "+rb+" cases !";
+    queueSplash(splashBomb,1800);audio_bomb.play();
     if(bombEl)removeTile(bombEl);
     setTimeout(function(){
-      if(player===1)positionp1=Math.max(0,positionp1-rollback);
-      else positionp2=Math.max(0,positionp2-rollback);
-      setStatus("💣 BOOM ! "+pname+" recule de "+rollback+" !");
-      moveToken(player);
-      setTimeout(function(){resolvePosition(player,endFn,depth+1);},1000);
-    },2000);
-    return;
+      var prevPos=player===1?positionp1:positionp2;
+      if(player===1)positionp1=Math.max(0,positionp1-rb);
+      else positionp2=Math.max(0,positionp2-rb);
+      setStatus("💣 BOOM ! "+pname+" recule de "+rb+" !");
+      animateMove(player,prevPos,(player===1?positionp1:positionp2),function(){
+        setTimeout(function(){resolvePosition(player,endFn,depth+1);},400);
+      });
+    },2000); return;
   }
-
-  // 7. TRAP
+  // 7. TRAP (missile)
   if(pos===posTrap){
     removeTile(tileTrap);posTrap=-1;
-    var trapRoll=Math.floor(Math.random()*6)+1;
+    var tr=Math.floor(Math.random()*6)+1;
     var foe=player===1?2:1;
     var foename=foe===1?p1name.textContent:p2name.textContent;
-    splashTrapTxt.textContent=foename+" recule de "+trapRoll+" cases !";
-    queueSplash(splashTrap,1800);
+    splashTrapTxt.textContent=foename+" recule de "+tr+" cases !";
+    queueSplash(splashTrap,1800);audio_trap.play();
     setTimeout(function(){
-      if(foe===1)positionp1=Math.max(0,positionp1-trapRoll);
-      else positionp2=Math.max(0,positionp2-trapRoll);
-      setStatus("🚀 Missile ! "+foename+" recule de "+trapRoll+" !");
-      moveToken(foe);
-      setTimeout(function(){
-        var foeCoord=COOR[foe===1?positionp1:positionp2];
-        if(COOR_DEATH[pos_death]===foeCoord){
-          if(foe===1)deadp1();else deadp2();
-          setTimeout(endFn,2600);
-        }else endFn();
-      },800);
-    },2000);
-    return;
+      var prevFoe=foe===1?positionp1:positionp2;
+      if(foe===1)positionp1=Math.max(0,positionp1-tr);
+      else positionp2=Math.max(0,positionp2-tr);
+      setStatus("🚀 Missile ! "+foename+" recule de "+tr+" !");
+      animateMove(foe,prevFoe,(foe===1?positionp1:positionp2),function(){
+        var fc=COOR[foe===1?positionp1:positionp2];
+        if(COOR_DEATH[pos_death]===fc){if(foe===1)deadp1();else deadp2();setTimeout(endFn,2800);}
+        else endFn();
+      });
+    },2000); return;
   }
-
   // 8. GIFT
   if(pos===posGift){
     removeTile(tileGift);posGift=-1;
     if(player===1)p1_d10=true;else p2_d10=true;
     setStatus("🎁 Cadeau ! "+pname+" lance 1D20 au prochain tour !");
     queueSplash(splashGift,1800);
-    setTimeout(function(){state();endFn();},2100);
-    return;
+    setTimeout(function(){state();endFn();},2100); return;
   }
-
   // 9. VORTEX
   if(pos===posVortex){
     removeTile(tileVortex);posVortex=-1;
-    audio_vortex.play();
-    queueSplash(splashVortex,1800);
+    audio_vortex.play();queueSplash(splashVortex,1800);
     setTimeout(function(){
       positionp1=Math.floor(Math.random()*70)+1;
       positionp2=Math.floor(Math.random()*70)+1;
-      g1.setAttribute("transform","translate("+COOR[positionp1]+")");
-      g2.setAttribute("transform","translate("+COOR[positionp2]+")");
-      pos1El.textContent=positionp1+"/80";
-      pos2El.textContent=positionp2+"/80";
-      setStatus("🌪️ VORTEX ! Tout le monde éparpillé !");
-      state();
-      setTimeout(function(){resolvePosition(player,endFn,depth+1);},1000);
-    },2000);
-    return;
+      snapToken(1);snapToken(2);
+      setStatus("🌀 VORTEX ! Éparpillés !");state();
+      setTimeout(function(){resolvePosition(player,endFn,depth+1);},1200);
+    },2000); return;
   }
-
   // nothing
   state();endFn();
 }
 
-// ═══════════════════════════════════════════════
-// PLAY FUNCTIONS
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// PLAY
+// ══════════════════════════════════════
 function p1play(){
   bp1.removeEventListener("click",p1play);
   audio_dice.play();bp1.className="roll-btn inactive";
   portalUsedThisTurn=false;
   var dMax=p1_d10?19:(p1_turbo?11:5);
   if(p1_d10)p1_d10=false;if(p1_turbo)p1_turbo=false;
-  var roll=Math.floor(Math.random()*dMax)+1;
+  var roll=(forcedDice>0)?forcedDice:Math.floor(Math.random()*dMax)+1;
+  forcedDice=-1;
   diceP1.textContent=roll;diceP2.textContent="–";
-  positionp1+=roll;moveToken(1);
+  var prev=positionp1;
+  positionp1=Math.min(positionp1+roll,80);
   money1+=roll;gold1.textContent=money1+" 💰";updateShop();
   if(roll===1){
-    death_move(function(){resolvePosition(1,p1end);});
+    // death_move first, then animate player, then resolve
+    death_move(function(){
+      animateMove(1,prev,positionp1,function(){resolvePosition(1,p1end);});
+    });
   }else{
-    setTimeout(function(){resolvePosition(1,p1end);},400);
+    animateMove(1,prev,positionp1,function(){
+      setTimeout(function(){resolvePosition(1,p1end);},150);
+    });
   }
 }
 function p2play(){
@@ -806,63 +836,57 @@ function p2play(){
   portalUsedThisTurn=false;
   var dMax=p2_d10?19:(p2_turbo?11:5);
   if(p2_d10)p2_d10=false;if(p2_turbo)p2_turbo=false;
-  var roll=Math.floor(Math.random()*dMax)+1;
+  var roll=(forcedDice>0)?forcedDice:Math.floor(Math.random()*dMax)+1;
+  forcedDice=-1;
   diceP2.textContent=roll;diceP1.textContent="–";
-  positionp2+=roll;moveToken(2);
+  var prev=positionp2;
+  positionp2=Math.min(positionp2+roll,80);
   money2+=roll;gold2.textContent=money2+" 💰";updateShop();
   if(roll===1){
-    death_move(function(){resolvePosition(2,p2end);});
+    death_move(function(){
+      animateMove(2,prev,positionp2,function(){resolvePosition(2,p2end);});
+    });
   }else{
-    setTimeout(function(){resolvePosition(2,p2end);},400);
+    animateMove(2,prev,positionp2,function(){
+      setTimeout(function(){resolvePosition(2,p2end);},150);
+    });
   }
 }
 function p1end(){setStatus(p2name.textContent+" lance le dé");setTurn(2);}
 function p2end(){setStatus(p1name.textContent+" lance le dé");setTurn(1);}
 
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 // EVENTS
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 function doublep1(){
-  moveToken(1);state();
-  queueSplash(splashBonus,1600);audio_bonus.play();
+  state();queueSplash(splashBonus,1600);audio_bonus.play();
   setStatus(p1name.textContent+" rejoue !");
   setTimeout(function(){bp1.addEventListener("click",p1play);bp1.className="roll-btn active";updateShop();},500);
 }
 function doublep2(){
-  moveToken(2);state();
-  queueSplash(splashBonus,1600);audio_bonus.play();
+  state();queueSplash(splashBonus,1600);audio_bonus.play();
   setStatus(p2name.textContent+" rejoue !");
   setTimeout(function(){bp2.addEventListener("click",p2play);bp2.className="roll-btn active";updateShop();},500);
 }
-
 function deadp1(){
-  moveToken(1);
+  audio_die.play();audio_dead.play();
+  queueSplash(splashDead,2000);
   setTimeout(function(){
-    audio_die.play();audio_dead.play();
-    queueSplash(splashDead,2000);
-    positionp1=0;
-    setTimeout(function(){
-      g1.setAttribute("transform","translate("+COOR[0]+")");
-      pos1El.textContent="0/80";
-      setStatus(p1name.textContent+" est mort…");p1end();
-    },2200);
-  },400);
+    positionp1=0;g1.setAttribute("transform","translate("+COOR[0]+")");pos1El.textContent="0/80";
+    setStatus(p1name.textContent+" est mort…");p1end();
+  },2400);
 }
 function deadp2(){
-  moveToken(2);
+  audio_die.play();audio_dead.play();
+  queueSplash(splashDead,2000);
   setTimeout(function(){
-    audio_die.play();audio_dead.play();
-    queueSplash(splashDead,2000);
-    positionp2=0;
-    setTimeout(function(){
-      g2.setAttribute("transform","translate("+COOR[0]+")");
-      pos2El.textContent="0/80";
-      setStatus(p2name.textContent+" est mort…");p2end();
-    },2200);
-  },400);
+    positionp2=0;g2.setAttribute("transform","translate("+COOR[0]+")");pos2El.textContent="0/80";
+    setStatus(p2name.textContent+" est mort…");p2end();
+  },2400);
 }
-
 function p1win(){
+  // Stay on finish — don't reset
+  positionp1=80;
   g1.setAttribute("transform","translate("+COOR[80]+")");pos1El.textContent="80/80";
   tune.pause();audio_victory.play();iback.style.opacity=1;
   ip1.src="p1win.gif";ip2.src="p2sad.png";
@@ -872,6 +896,7 @@ function p1win(){
   setStatus("🏆 Victoire de "+p1name.textContent+" !");
 }
 function p2win(){
+  positionp2=80;
   g2.setAttribute("transform","translate("+COOR[80]+")");pos2El.textContent="80/80";
   tune.pause();audio_victory.play();iback.style.opacity=1;
   ip2.src="p2win.gif";ip1.src="p1sad.png";
@@ -880,25 +905,100 @@ function p2win(){
   queueSplash(splashWin,9999);
   setStatus("🏆 Victoire de "+p2name.textContent+" !");
 }
-
 function xch(){
-  setStatus("😵‍💫 Échange de positions !");audio_warp.play();
-  queueSplash(splashSwap,1600);
-  var tmp=positionp1;positionp1=positionp2;positionp2=tmp;
-  g1.setAttribute("transform","translate("+COOR[positionp1]+")");
-  g2.setAttribute("transform","translate("+COOR[positionp2]+")");
-  pos1El.textContent=positionp1+"/80";pos2El.textContent=positionp2+"/80";state();
+  setStatus("😵‍💫 Échange !");audio_warp.play();queueSplash(splashSwap,1600);
+  var t=positionp1;positionp1=positionp2;positionp2=t;
+  snapToken(1);snapToken(2);state();
 }
 
-// ═══════════════════════════════════════════════
-// PLACE TILES + SKULL ON BOARD
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
+// DEBUG FUNCTIONS
+// ══════════════════════════════════════
+function dbgTeleport(p){
+  var val=parseInt(document.getElementById("dbgP"+p+"pos").value)||0;
+  val=Math.max(0,Math.min(80,val));
+  if(p===1){positionp1=val;snapToken(1);}else{positionp2=val;snapToken(2);}
+  setStatus("🔧 J"+p+" téléporté → case "+val);state();updateShop();
+}
+function dbgForceDice(){
+  var val=parseInt(document.getElementById("dbgDice").value)||1;
+  val=Math.max(1,Math.min(20,val));
+  forcedDice=val;
+  document.getElementById("dbgDiceStatus").textContent="Prochain dé forcé : "+val;
+  setStatus("🔧 Prochain dé = "+val);
+}
+function dbgEffect(type){
+  var p=parseInt(document.getElementById("dbgEffectPlayer").value)||1;
+  var endFn=p===1?p1end:p2end;
+  document.getElementById("dbgModal").style.display="none";
+  switch(type){
+    case"death": if(p===1)deadp1();else deadp2(); break;
+    case"bonus": if(p===1)doublep1();else doublep2(); break;
+    case"swap":  xch();endFn(); break;
+    case"portal":
+      portalUsedThisTurn=false;
+      var np=p===1?(positionp1<40?orange_pos:blue_pos):(positionp2<40?orange_pos:blue_pos);
+      if(p===1)positionp1=np;else positionp2=np;
+      snapToken(p);queueSplash(splashPortal,1600);audio_portal.play();
+      setStatus("🔧 Portail forcé");setTimeout(endFn,2000);break;
+    case"bomb":
+      var rb2=Math.floor(Math.random()*6)+1;
+      splashBombTxt.textContent="Test: recule de "+rb2;
+      queueSplash(splashBomb,1800);audio_bomb.play();
+      setTimeout(function(){
+        var prev=p===1?positionp1:positionp2;
+        if(p===1)positionp1=Math.max(0,positionp1-rb2);else positionp2=Math.max(0,positionp2-rb2);
+        animateMove(p,prev,(p===1?positionp1:positionp2),function(){state();endFn();});
+      },2000);break;
+    case"gift":  if(p===1)p1_d10=true;else p2_d10=true;queueSplash(splashGift,1800);setTimeout(function(){state();endFn();},2000);break;
+    case"trap":
+      var tr2=Math.floor(Math.random()*6)+1;
+      splashTrapTxt.textContent="Test: recule de "+tr2;
+      queueSplash(splashTrap,1800);audio_trap.play();
+      setTimeout(function(){
+        var foe=p===1?2:1,prev2=foe===1?positionp1:positionp2;
+        if(foe===1)positionp1=Math.max(0,positionp1-tr2);else positionp2=Math.max(0,positionp2-tr2);
+        animateMove(foe,prev2,(foe===1?positionp1:positionp2),function(){state();endFn();});
+      },2000);break;
+    case"vortex":
+      audio_vortex.play();queueSplash(splashVortex,1800);
+      setTimeout(function(){
+        positionp1=Math.floor(Math.random()*70)+1;positionp2=Math.floor(Math.random()*70)+1;
+        snapToken(1);snapToken(2);state();endFn();
+      },2000);break;
+    case"win": if(p===1)p1win();else p2win();break;
+  }
+}
+function dbgAddMoney(p,amt){
+  if(p===1){money1+=amt;gold1.textContent=money1+" 💰";}
+  else{money2+=amt;gold2.textContent=money2+" 💰";}
+  updateShop();setStatus("🔧 +"+amt+"💰 pour J"+p);
+}
+function dbgUpdateTileMap(){
+  var el=document.getElementById("dbgTileMap");
+  if(!el)return;
+  el.innerHTML=
+    "💀 Mort : COOR_DEATH["+pos_death+"] = "+COOR_DEATH[pos_death]+"<br>"+
+    "🔵 Portail bleu : COOR["+blue_pos+"] = "+COOR[blue_pos]+"<br>"+
+    "🟠 Portail orange : COOR["+orange_pos+"] = "+COOR[orange_pos]+"<br>"+
+    "🟡 Bonus ×5 : "+[posb1,posb2,posb3,posb4,posb5].map(function(p){return COOR[p];}).join(", ")+"<br>"+
+    "💣 Bombe1 : "+(posBomb1>=0?COOR[posBomb1]:"consommée")+"<br>"+
+    "💣 Bombe2 : "+(posBomb2>=0?COOR[posBomb2]:"consommée")+"<br>"+
+    "🎁 Cadeau : "+(posGift>=0?COOR[posGift]:"consommé")+"<br>"+
+    "🚀 Missile : "+(posTrap>=0?COOR[posTrap]:"consommé")+"<br>"+
+    "🌀 Vortex : "+(posVortex>=0?COOR[posVortex]:"consommé");
+}
+// Refresh tile map when debug modal opens
+document.getElementById("dbgBtn").addEventListener("click",dbgUpdateTileMap);
+
+// ══════════════════════════════════════
+// PLACE TILES
+// ══════════════════════════════════════
 bonus1.setAttribute("transform","translate("+COOR[posb1]+")");
 bonus2.setAttribute("transform","translate("+COOR[posb2]+")");
 bonus3.setAttribute("transform","translate("+COOR[posb3]+")");
 bonus4.setAttribute("transform","translate("+COOR[posb4]+")");
 bonus5.setAttribute("transform","translate("+COOR[posb5]+")");
-// Portals: translate parent, rotate inner (no conflict)
 portalA.setAttribute("transform","translate("+COOR[blue_pos]+")");
 portalB.setAttribute("transform","translate("+COOR[orange_pos]+")");
 tileBomb1.setAttribute("transform","translate("+COOR[posBomb1]+")");
@@ -906,15 +1006,13 @@ tileBomb2.setAttribute("transform","translate("+COOR[posBomb2]+")");
 tileGift.setAttribute("transform","translate("+COOR[posGift]+")");
 tileTrap.setAttribute("transform","translate("+COOR[posTrap]+")");
 tileVortex.setAttribute("transform","translate("+COOR[posVortex]+")");
-// Players at start
 g1.setAttribute("transform","translate("+COOR[0]+")");
 g2.setAttribute("transform","translate("+COOR[0]+")");
-// SKULL visible at initial death position
 skull.setAttribute("transform","translate("+COOR_DEATH[pos_death]+")");
 
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 // START
-// ═══════════════════════════════════════════════
+// ══════════════════════════════════════
 gstart.addEventListener("click",init);
 document.getElementById("helpModal").style.display="block";
 </script>

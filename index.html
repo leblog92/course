@@ -70,75 +70,75 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
 <!-- HELP MODAL -->
 <div id="helpModal">
 <div class="modal-inner">
-  <button id="closeHelp" onclick="document.getElementById('helpModal').style.display='none'">✕ Fermer</button>
-  <h3>⚔️ Paranoia Duel β — Règles</h3>
-  <p>Jeu de dés local, 2 joueurs. Premier à la case finale gagne.</p>
-  <b>Base</b>
+  <button id="closeHelp" onclick="document.getElementById('helpModal').style.display='none'">✕ Close</button>
+  <h3>⚔️ Paranoia Duel β — Rules</h3>
+  <p>Local dice game for 2 players. First to the finish wins.</p>
+  <b>Basics</b>
   <table>
-    <tr><td>🎲</td><td>Chaque joueur lance 1D6 à son tour</td></tr>
-    <tr><td>1️⃣</td><td>Lancer 1 → la Mort se déplace près du leader</td></tr>
-    <tr><td>💀</td><td>Mort sur votre case → retour départ (priorité absolue)</td></tr>
-    <tr><td>🟡</td><td>Cercle jaune → rejoue immédiatement</td></tr>
-    <tr><td>🟢</td><td>Cercle vert → échange les positions</td></tr>
-    <tr><td>🔵/🟠</td><td>Portail → téléporte vers l'autre portail (aller simple)</td></tr>
+    <tr><td>🎲</td><td>Each player rolls 1D6 per turn</td></tr>
+    <tr><td>1️⃣</td><td>Roll 1 → Death moves near the leader</td></tr>
+    <tr><td>💀</td><td>Death on your square → back to start (absolute priority)</td></tr>
+    <tr><td>🟡</td><td>Yellow dot → play again immediately</td></tr>
+    <tr><td>🟢</td><td>Green dot → swap positions</td></tr>
+    <tr><td>🔵/🟠</td><td>Portal → teleports to the other portal (one way)</td></tr>
   </table>
-  <b>Tuiles spéciales (usage unique)</b>
+  <b>Special tiles (one use)</b>
   <table>
-    <tr><td>💣</td><td><b style="color:crimson">Bombe</b> — recule de 1–6 cases</td></tr>
-    <tr><td>🎁</td><td><b style="color:cyan">Cadeau</b> — prochain lancer 1D20 !</td></tr>
-    <tr><td>🚀</td><td><b style="color:orange">Missile</b> — l'adversaire recule de 1–6</td></tr>
-    <tr><td>🌀</td><td><b style="color:#ccc">Vortex</b> — tout le monde éparpillé</td></tr>
+    <tr><td>💣</td><td><b style="color:crimson">Bomb</b> — go back 1–6 squares</td></tr>
+    <tr><td>🎁</td><td><b style="color:cyan">Gift</b> — next roll is 1D20!</td></tr>
+    <tr><td>🚀</td><td><b style="color:orange">Missile</b> — foe goes back 1–6</td></tr>
+    <tr><td>🌀</td><td><b style="color:#ccc">Vortex</b> — everyone scattered</td></tr>
   </table>
-  <b>Boutique 💰</b> <span style="color:#777">(pendant votre tour)</span>
+  <b>Shop 💰</b> <span style="color:#777">(during your turn)</span>
   <table>
-    <tr><td>🛡️ 15💰</td><td>Amulette — annule la prochaine mort</td></tr>
-    <tr><td>⚡ 10💰</td><td>Turbo — prochain lancer 1D12</td></tr>
-    <tr><td>💣 20💰</td><td>Poser une bombe sur le plateau</td></tr>
+    <tr><td>🛡️ 15💰</td><td>Amulet — cancels next death (this turn only)</td></tr>
+    <tr><td>⚡ 10💰</td><td>Turbo — next roll is 1D12</td></tr>
+    <tr><td>💣 20💰</td><td>Place a bomb on the board</td></tr>
   </table>
-  <p style="color:#555;font-size:.85em;margin-bottom:0">Les effets se combinent. F5 pour redémarrer.</p>
+  <p style="color:#555;font-size:.85em;margin-bottom:0">Effects chain. F5 to restart.</p>
 </div>
 </div>
 
 <!-- DEBUG MODAL -->
 <div id="dbgModal">
 <div class="modal-inner">
-  <button id="closeDbg" onclick="document.getElementById('dbgModal').style.display='none'">✕ Fermer</button>
+  <button id="closeDbg" onclick="document.getElementById('dbgModal').style.display='none'">✕ Close</button>
   <h3>🔧 Debug / Test</h3>
 
   <div class="dbg-section">
-    <h4>📍 Téléporter joueur</h4>
+    <h4>📍 Teleport player</h4>
     <div class="dbg-row">
-      J1 → case <input id="dbgP1pos" class="dbg-input" type="number" min="0" max="80" value="0">
+      P1 → square <input id="dbgP1pos" class="dbg-input" type="number" min="0" max="80" value="0">
       <button class="dbg-btn" onclick="dbgTeleport(1)">Go P1</button>
-      &nbsp; J2 → case <input id="dbgP2pos" class="dbg-input" type="number" min="0" max="80" value="0">
+      &nbsp; P2 → square <input id="dbgP2pos" class="dbg-input" type="number" min="0" max="80" value="0">
       <button class="dbg-btn" onclick="dbgTeleport(2)">Go P2</button>
     </div>
   </div>
 
   <div class="dbg-section">
-    <h4>🎲 Forcer le prochain dé</h4>
+    <h4>🎲 Force next dice</h4>
     <div class="dbg-row">
-      Valeur <input id="dbgDice" class="dbg-input" type="number" min="1" max="20" value="1">
-      <button class="dbg-btn" onclick="dbgForceDice()">Forcer</button>
-      <button class="dbg-btn" onclick="forcedDice=-1;setStatus('Dé libre.')">Libérer</button>
+      Value <input id="dbgDice" class="dbg-input" type="number" min="1" max="20" value="1">
+      <button class="dbg-btn" onclick="dbgForceDice()">Force</button>
+      <button class="dbg-btn" onclick="forcedDice=-1;setStatus('Dice free.')">Free</button>
     </div>
-    <div id="dbgDiceStatus" style="color:#666;font-size:.8em;margin-top:3px">Dé libre</div>
+    <div id="dbgDiceStatus" style="color:#666;font-size:.8em;margin-top:3px">Dice free</div>
   </div>
 
   <div class="dbg-section">
-    <h4>💥 Déclencher un effet</h4>
+    <h4>💥 Trigger an effect</h4>
     <div class="dbg-row">
-      Sur joueur <select id="dbgEffectPlayer" style="background:#111;color:#ccc;border:1px solid #444;border-radius:3px;padding:2px;">
-        <option value="1">J1</option><option value="2">J2</option>
+      On player <select id="dbgEffectPlayer" style="background:#111;color:#ccc;border:1px solid #444;border-radius:3px;padding:2px;">
+        <option value="1">P1</option><option value="2">P2</option>
       </select>
     </div>
     <div class="dbg-row">
-      <button class="dbg-btn" onclick="dbgEffect('death')">💀 Mort</button>
+      <button class="dbg-btn" onclick="dbgEffect('death')">💀 Death</button>
       <button class="dbg-btn" onclick="dbgEffect('bonus')">🟡 Bonus</button>
       <button class="dbg-btn" onclick="dbgEffect('swap')">🟢 Swap</button>
-      <button class="dbg-btn" onclick="dbgEffect('portal')">🌀 Portail</button>
-      <button class="dbg-btn" onclick="dbgEffect('bomb')">💣 Bombe</button>
-      <button class="dbg-btn" onclick="dbgEffect('gift')">🎁 Cadeau</button>
+      <button class="dbg-btn" onclick="dbgEffect('portal')">🌀 Portal</button>
+      <button class="dbg-btn" onclick="dbgEffect('bomb')">💣 Bomb</button>
+      <button class="dbg-btn" onclick="dbgEffect('gift')">🎁 Gift</button>
       <button class="dbg-btn" onclick="dbgEffect('trap')">🚀 Missile</button>
       <button class="dbg-btn" onclick="dbgEffect('vortex')">🌀 Vortex</button>
       <button class="dbg-btn" onclick="dbgEffect('win')">🏆 Win</button>
@@ -146,17 +146,17 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
   </div>
 
   <div class="dbg-section">
-    <h4>🗺️ Positions des tuiles</h4>
+    <h4>🗺️ Tile positions</h4>
     <div id="dbgTileMap" style="font-size:.75em;color:#888;line-height:1.8;"></div>
   </div>
 
   <div class="dbg-section">
-    <h4>💰 Donner des pièces</h4>
+    <h4>💰 Give coins</h4>
     <div class="dbg-row">
-      <button class="dbg-btn" onclick="dbgAddMoney(1,50)">+50💰 J1</button>
-      <button class="dbg-btn" onclick="dbgAddMoney(2,50)">+50💰 J2</button>
-      <button class="dbg-btn" onclick="dbgAddMoney(1,200)">+200💰 J1</button>
-      <button class="dbg-btn" onclick="dbgAddMoney(2,200)">+200💰 J2</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(1,50)">+50💰 P1</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(2,50)">+50💰 P2</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(1,200)">+200💰 P1</button>
+      <button class="dbg-btn" onclick="dbgAddMoney(2,200)">+200💰 P2</button>
     </div>
   </div>
 </div>
@@ -168,12 +168,12 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
   <!-- LEFT P1 -->
   <div class="side-panel" id="panelP1">
     <div class="player-box" id="boxP1">
-      <span contenteditable id="p1name" class="player-name">Joueur 1</span>
+      <span contenteditable id="p1name" class="player-name">Player 1</span>
       <div class="player-avatar"><img id="ip1" src="p1.png"></div>
       <div class="dice-display" id="diceP1">–</div>
       <div class="player-stats"><span id="gold1">0 💰</span><span id="pos1">0/80</span></div>
-      <button class="roll-btn inactive" id="bp1">🎲 Lancer</button>
-      <div class="shop-title">Boutique</div>
+      <button class="roll-btn inactive" id="bp1">🎲 Roll</button>
+      <div class="shop-title">Shop</div>
       <div id="shop1"></div>
     </div>
   </div>
@@ -256,65 +256,65 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_bonus.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="18" dominant-baseline="middle" text-anchor="middle">👍</text>
-      <text x="50" y="72" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">REJOUE !</text>
+      <text x="50" y="72" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">PLAY AGAIN!</text>
     </g>
     <g id="splashDead" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_dead.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="35" font-size="14" dominant-baseline="middle" text-anchor="middle">💀</text>
-      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="red">VOUS ÊTES MORT</text>
-      <text x="50" y="72" font-size="3.5" dominant-baseline="middle" text-anchor="middle" fill="#ccc">mais tout espoir n'est pas perdu</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="red">YOU DIED</text>
+      <text x="50" y="72" font-size="3.5" dominant-baseline="middle" text-anchor="middle" fill="#ccc">but all hope is not lost</text>
     </g>
     <g id="splashSwap" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_exchange.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="14" dominant-baseline="middle" text-anchor="middle">😵‍💫</text>
-      <text x="50" y="72" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="lime">ÉCHANGE !</text>
+      <text x="50" y="72" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="lime">SWAP!</text>
     </g>
     <g id="splashPortal" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_portal.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
-      <text x="50" y="82" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="white">PORTAIL !</text>
+      <text x="50" y="82" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="white">PORTAL!</text>
     </g>
     <g id="splashBomb" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_bomb.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">💣</text>
-      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="crimson">BOOM !</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="crimson">BOOM!</text>
       <text id="splashBombTxt" x="50" y="72" font-size="4" dominant-baseline="middle" text-anchor="middle" fill="#f88"></text>
     </g>
     <g id="splashGift" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_cadeau.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🎁</text>
-      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="cyan">CADEAU !</text>
-      <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#8ff">Prochain lancer : 1D20</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="cyan">GIFT!</text>
+      <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#8ff">Next roll: 1D20</text>
     </g>
     <g id="splashTrap" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_trap.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🚀</text>
-      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="orange">MISSILE !</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="orange">MISSILE!</text>
       <text id="splashTrapTxt" x="50" y="72" font-size="4" dominant-baseline="middle" text-anchor="middle" fill="#fa8"></text>
     </g>
     <g id="splashVortex" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_vortex.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🌀</text>
-      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="white">VORTEX !</text>
-      <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#aaa">Tout le monde éparpillé !</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="white">VORTEX!</text>
+      <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#aaa">Everyone scattered!</text>
     </g>
     <g id="splashShield" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(20,20,60,.9)"/>
       <text x="50" y="38" font-size="16" dominant-baseline="middle" text-anchor="middle">🛡️</text>
-      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="#aaf">AMULETTE !</text>
-      <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#88f">La mort est annulée</text>
+      <text x="50" y="60" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="#aaf">AMULET!</text>
+      <text x="50" y="72" font-size="4"  dominant-baseline="middle" text-anchor="middle" fill="#88f">Death cancelled</text>
     </g>
     <g id="splashWin" style="transition:.4s" transform="translate(-200 0)">
       <rect width="100" height="100" fill="rgba(0,0,0,.85)"/>
       <image xlink:href="splash_win.png" x="0" y="0" width="100" height="100" opacity="0.8"/>
       <text x="50" y="35" font-size="14" dominant-baseline="middle" text-anchor="middle">🏆</text>
-      <text x="50" y="57" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">VICTOIRE !</text>
+      <text x="50" y="57" font-size="7"  dominant-baseline="middle" text-anchor="middle" fill="gold">VICTORY!</text>
       <text id="splashWinTxt" x="50" y="70" font-size="4.5" dominant-baseline="middle" text-anchor="middle" fill="#fc0"></text>
     </g>
     <!-- START SCREEN -->
@@ -331,12 +331,12 @@ svg{width:500px;height:500px;border:1px solid #000;display:block;margin:0 auto;}
   <!-- RIGHT P2 -->
   <div class="side-panel" id="panelP2">
     <div class="player-box" id="boxP2">
-      <span contenteditable id="p2name" class="player-name">Joueur 2</span>
+      <span contenteditable id="p2name" class="player-name">Player 2</span>
       <div class="player-avatar"><img id="ip2" src="p2.png"></div>
       <div class="dice-display" id="diceP2">–</div>
       <div class="player-stats"><span id="gold2">0 💰</span><span id="pos2">0/80</span></div>
-      <button class="roll-btn inactive" id="bp2">🎲 Lancer</button>
-      <div class="shop-title">Boutique</div>
+      <button class="roll-btn inactive" id="bp2">🎲 Roll</button>
+      <div class="shop-title">Shop</div>
       <div id="shop2"></div>
     </div>
   </div>
@@ -452,6 +452,7 @@ var audio_bomb=new Audio("bomb.mp3");
 var audio_vortex=new Audio("vortex.mp3");
 var audio_random=new Audio("random.mp3");
 var audio_trap=new Audio("trap.mp3");
+var audio_cadeau=new Audio("cadeau.mp3");
 
 // ══════════════════════════════════════
 // STATE
@@ -469,18 +470,18 @@ var MOVE_STEP_MS=120; // ms per step in animated movement
 // SPLASH QUEUE
 // ══════════════════════════════════════
 var splashQueue=[],splashRunning=false;
-function queueSplash(el,dur,setup){
-  splashQueue.push({el:el,dur:dur||1800,setup:setup||null});
+function queueSplash(el,dur,onDone){
+  splashQueue.push({el:el,dur:dur||1800,onDone:onDone||null});
   if(!splashRunning)runNextSplash();
 }
 function runNextSplash(){
   if(!splashQueue.length){splashRunning=false;return;}
   splashRunning=true;
   var it=splashQueue.shift();
-  if(it.setup)it.setup();
   it.el.setAttribute("transform","translate(0 0)");
   setTimeout(function(){
     it.el.setAttribute("transform","translate(-200 0)");
+    if(it.onDone)it.onDone();
     setTimeout(runNextSplash,400);
   },it.dur);
 }
@@ -508,7 +509,7 @@ function init(){
   document.getElementById("before").innerHTML=
     '<button onclick="location.reload()" style="padding:3px 10px;font-size:.8em;opacity:.6;cursor:pointer;background:#222;color:#aaa;border:1px solid #444;border-radius:4px">↺ Reset</button>';
   panelP1.classList.add("visible"); panelP2.classList.add("visible");
-  setStatus(p1name.textContent+" lance le dé");
+  setStatus(p1name.textContent+" rolls the dice");
   setTurn(1); updateShop();
 }
 
@@ -600,21 +601,27 @@ function updateShop(){
     mk("💣",SHOP.bomb,false,!p2on||money2<SHOP.bomb,"buyBomb(2)");
 }
 function buyShield(p){
-  if(p===1&&money1>=SHOP.shield&&!p1_shield){money1-=SHOP.shield;p1_shield=true;gold1.textContent=money1+" 💰";setStatus("🛡️ Amulette activée !");}
-  else if(p===2&&money2>=SHOP.shield&&!p2_shield){money2-=SHOP.shield;p2_shield=true;gold2.textContent=money2+" 💰";setStatus("🛡️ Amulette activée !");}
+  var myTurn=(p===1&&bp1.className.indexOf("active")!==-1)||(p===2&&bp2.className.indexOf("active")!==-1);
+  if(!myTurn)return;
+  if(p===1&&money1>=SHOP.shield&&!p1_shield){money1-=SHOP.shield;p1_shield=true;gold1.textContent=money1+" 💰";setStatus("🛡️ Amulet active! (this turn only)");}
+  else if(p===2&&money2>=SHOP.shield&&!p2_shield){money2-=SHOP.shield;p2_shield=true;gold2.textContent=money2+" 💰";setStatus("🛡️ Amulet active! (this turn only)");}
   updateShop();
 }
 function buyTurbo(p){
-  if(p===1&&money1>=SHOP.turbo&&!p1_turbo){money1-=SHOP.turbo;p1_turbo=true;gold1.textContent=money1+" 💰";setStatus("⚡ Turbo ! 1D12 !");}
-  else if(p===2&&money2>=SHOP.turbo&&!p2_turbo){money2-=SHOP.turbo;p2_turbo=true;gold2.textContent=money2+" 💰";setStatus("⚡ Turbo ! 1D12 !");}
+  var myTurn=(p===1&&bp1.className.indexOf("active")!==-1)||(p===2&&bp2.className.indexOf("active")!==-1);
+  if(!myTurn)return;
+  if(p===1&&money1>=SHOP.turbo&&!p1_turbo){money1-=SHOP.turbo;p1_turbo=true;gold1.textContent=money1+" 💰";setStatus("⚡ Turbo! Next roll 1D12!");}
+  else if(p===2&&money2>=SHOP.turbo&&!p2_turbo){money2-=SHOP.turbo;p2_turbo=true;gold2.textContent=money2+" 💰";setStatus("⚡ Turbo! Next roll 1D12!");}
   updateShop();
 }
 function buyBomb(p){
+  var myTurn=(p===1&&bp1.className.indexOf("active")!==-1)||(p===2&&bp2.className.indexOf("active")!==-1);
+  if(!myTurn)return;
   var cost=SHOP.bomb;
   if(p===1&&money1<cost)return; if(p===2&&money2<cost)return;
   if(p===1){money1-=cost;gold1.textContent=money1+" 💰";}
   else{money2-=cost;gold2.textContent=money2+" 💰";}
-  placingBomb=p;setStatus("💣 Cliquez sur une case !");svgBoard.style.cursor="crosshair";updateShop();
+  placingBomb=p;setStatus("💣 Click a square to place a bomb!");svgBoard.style.cursor="crosshair";updateShop();
 }
 function createShopBomb(pos){
   var ns="http://www.w3.org/2000/svg";
@@ -636,9 +643,9 @@ svgBoard.addEventListener("click",function(e){
   var gx=Math.round(x/10)*10,gy=Math.round(y/10)*10;
   gx=Math.max(10,Math.min(90,gx));gy=Math.max(10,Math.min(90,gy));
   var coord=gx+" "+gy;
-  if(coord==="90 90"||coord==="80 90"||coord==="50 50"){setStatus("⛔ Case interdite !");return;}
-  var idx=COOR.indexOf(coord);if(idx<0){setStatus("⛔ Invalide !");return;}
-  createShopBomb(idx);setStatus("💣 Posée !");svgBoard.style.cursor="";placingBomb=0;updateShop();
+  if(coord==="90 90"||coord==="80 90"||coord==="50 50"){setStatus("⛔ Square forbidden!");return;}
+  var idx=COOR.indexOf(coord);if(idx<0){setStatus("⛔ Invalid!");return;}
+  createShopBomb(idx);setStatus("💣 Placed!");svgBoard.style.cursor="";placingBomb=0;updateShop();
 });
 
 // ══════════════════════════════════════
@@ -710,7 +717,7 @@ function resolvePosition(player,endFn,depth){
   if(COOR_DEATH[pos_death]===coord){
     if(player===1?p1_shield:p2_shield){
       if(player===1)p1_shield=false;else p2_shield=false;
-      setStatus("🛡️ Amulette ! "+pname+" survit !");
+      setStatus("🛡️ Amulet! "+pname+" survives!");
       audio_bonus.play();updateShop();
       queueSplash(splashShield,1800);
       setTimeout(function(){state();endFn();},2400); return;
@@ -724,7 +731,7 @@ function resolvePosition(player,endFn,depth){
     if(player===1)doublep1();else doublep2();return;
   }
   // 4. SWAP
-  if(coord==="50 50"||coord==="80 90"){xch();endFn();return;}
+  if(coord==="50 50"||coord==="80 90"){xch(function(){endFn();});return;}
   // 5. PORTAL (one way per turn)
   if(!portalUsedThisTurn){
     var newPos=-1;
@@ -733,11 +740,13 @@ function resolvePosition(player,endFn,depth){
     if(newPos!==-1){
       portalUsedThisTurn=true;
       if(player===1)positionp1=newPos;else positionp2=newPos;
-      setStatus("🌀 Portail ! "+pname+" téléporté !");
+      setStatus("Portal! "+pname+" teleported!");
       audio_portal.play();
-      queueSplash(splashPortal,1600);
-      snapToken(player);
-      setTimeout(function(){resolvePosition(player,endFn,depth+1);},2100); return;
+      queueSplash(splashPortal,1600,function(){
+        snapToken(player);
+        setTimeout(function(){resolvePosition(player,endFn,depth+1);},300);
+      });
+      return;
     }
   }
   // 6. BOMB
@@ -747,14 +756,14 @@ function resolvePosition(player,endFn,depth){
   else if(checkShopBombs(pos))bombHit=true;
   if(bombHit){
     var rb=Math.floor(Math.random()*6)+1;
-    splashBombTxt.textContent=pname+" recule de "+rb+" cases !";
+    splashBombTxt.textContent=pname+" goes back "+rb+" squares!";
     queueSplash(splashBomb,1800);audio_bomb.play();
     if(bombEl)removeTile(bombEl);
     setTimeout(function(){
       var prevPos=player===1?positionp1:positionp2;
       if(player===1)positionp1=Math.max(0,positionp1-rb);
       else positionp2=Math.max(0,positionp2-rb);
-      setStatus("💣 BOOM ! "+pname+" recule de "+rb+" !");
+      setStatus("💣 BOOM! "+pname+" goes back "+rb+" !");
       animateMove(player,prevPos,(player===1?positionp1:positionp2),function(){
         setTimeout(function(){resolvePosition(player,endFn,depth+1);},400);
       });
@@ -766,13 +775,13 @@ function resolvePosition(player,endFn,depth){
     var tr=Math.floor(Math.random()*6)+1;
     var foe=player===1?2:1;
     var foename=foe===1?p1name.textContent:p2name.textContent;
-    splashTrapTxt.textContent=foename+" recule de "+tr+" cases !";
+    splashTrapTxt.textContent=foename+" goes back "+tr+" squares!";
     queueSplash(splashTrap,1800);audio_trap.play();
     setTimeout(function(){
       var prevFoe=foe===1?positionp1:positionp2;
       if(foe===1)positionp1=Math.max(0,positionp1-tr);
       else positionp2=Math.max(0,positionp2-tr);
-      setStatus("🚀 Missile ! "+foename+" recule de "+tr+" !");
+      setStatus("🚀 Missile! "+foename+" goes back "+tr+" !");
       animateMove(foe,prevFoe,(foe===1?positionp1:positionp2),function(){
         var fc=COOR[foe===1?positionp1:positionp2];
         if(COOR_DEATH[pos_death]===fc){if(foe===1)deadp1();else deadp2();setTimeout(endFn,2800);}
@@ -784,21 +793,23 @@ function resolvePosition(player,endFn,depth){
   if(pos===posGift){
     removeTile(tileGift);posGift=-1;
     if(player===1)p1_d10=true;else p2_d10=true;
-    setStatus("🎁 Cadeau ! "+pname+" lance 1D20 au prochain tour !");
+    setStatus("🎁 Gift! "+pname+" rolls 1D20 next turn!");
+    audio_cadeau.play();
     queueSplash(splashGift,1800);
     setTimeout(function(){state();endFn();},2100); return;
   }
   // 9. VORTEX
   if(pos===posVortex){
     removeTile(tileVortex);posVortex=-1;
-    audio_vortex.play();queueSplash(splashVortex,1800);
-    setTimeout(function(){
-      positionp1=Math.floor(Math.random()*70)+1;
-      positionp2=Math.floor(Math.random()*70)+1;
-      snapToken(1);snapToken(2);
-      setStatus("🌀 VORTEX ! Éparpillés !");state();
-      setTimeout(function(){resolvePosition(player,endFn,depth+1);},1200);
-    },2000); return;
+    audio_vortex.play();
+    positionp1=Math.floor(Math.random()*70)+1;
+    positionp2=Math.floor(Math.random()*70)+1;
+    setStatus("🌀 VORTEX! Everyone scattered!");
+    queueSplash(splashVortex,1800,function(){
+      snapToken(1);snapToken(2);state();
+      setTimeout(function(){resolvePosition(player,endFn,depth+1);},300);
+    });
+    return;
   }
   // nothing
   state();endFn();
@@ -820,9 +831,9 @@ function p1play(){
   positionp1=Math.min(positionp1+roll,80);
   money1+=roll;gold1.textContent=money1+" 💰";updateShop();
   if(roll===1){
-    // death_move first, then animate player, then resolve
-    death_move(function(){
-      animateMove(1,prev,positionp1,function(){resolvePosition(1,p1end);});
+    // player moves first, then death moves, then resolve
+    animateMove(1,prev,positionp1,function(){
+      death_move(function(){resolvePosition(1,p1end);});
     });
   }else{
     animateMove(1,prev,positionp1,function(){
@@ -843,8 +854,8 @@ function p2play(){
   positionp2=Math.min(positionp2+roll,80);
   money2+=roll;gold2.textContent=money2+" 💰";updateShop();
   if(roll===1){
-    death_move(function(){
-      animateMove(2,prev,positionp2,function(){resolvePosition(2,p2end);});
+    animateMove(2,prev,positionp2,function(){
+      death_move(function(){resolvePosition(2,p2end);});
     });
   }else{
     animateMove(2,prev,positionp2,function(){
@@ -852,20 +863,20 @@ function p2play(){
     });
   }
 }
-function p1end(){setStatus(p2name.textContent+" lance le dé");setTurn(2);}
-function p2end(){setStatus(p1name.textContent+" lance le dé");setTurn(1);}
+function p1end(){setStatus(p2name.textContent+" rolls the dice");p1_shield=false;setTurn(2);}
+function p2end(){setStatus(p1name.textContent+" rolls the dice");p2_shield=false;setTurn(1);}
 
 // ══════════════════════════════════════
 // EVENTS
 // ══════════════════════════════════════
 function doublep1(){
   state();queueSplash(splashBonus,1600);audio_bonus.play();
-  setStatus(p1name.textContent+" rejoue !");
+  setStatus(p1name.textContent+" plays again!");
   setTimeout(function(){bp1.addEventListener("click",p1play);bp1.className="roll-btn active";updateShop();},500);
 }
 function doublep2(){
   state();queueSplash(splashBonus,1600);audio_bonus.play();
-  setStatus(p2name.textContent+" rejoue !");
+  setStatus(p2name.textContent+" plays again!");
   setTimeout(function(){bp2.addEventListener("click",p2play);bp2.className="roll-btn active";updateShop();},500);
 }
 function deadp1(){
@@ -873,7 +884,7 @@ function deadp1(){
   queueSplash(splashDead,2000);
   setTimeout(function(){
     positionp1=0;g1.setAttribute("transform","translate("+COOR[0]+")");pos1El.textContent="0/80";
-    setStatus(p1name.textContent+" est mort…");p1end();
+    setStatus(p1name.textContent+" is dead…");p1end();
   },2400);
 }
 function deadp2(){
@@ -881,7 +892,7 @@ function deadp2(){
   queueSplash(splashDead,2000);
   setTimeout(function(){
     positionp2=0;g2.setAttribute("transform","translate("+COOR[0]+")");pos2El.textContent="0/80";
-    setStatus(p2name.textContent+" est mort…");p2end();
+    setStatus(p2name.textContent+" is dead…");p2end();
   },2400);
 }
 function p1win(){
@@ -891,9 +902,9 @@ function p1win(){
   tune.pause();audio_victory.play();iback.style.opacity=1;
   ip1.src="p1win.gif";ip2.src="p2sad.png";
   boxP1.style.borderColor="gold";boxP1.style.boxShadow="0 0 16px gold";
-  splashWinTxt.textContent=p1name.textContent+" remporte la victoire !";
+  splashWinTxt.textContent=p1name.textContent+" wins!";
   queueSplash(splashWin,9999);
-  setStatus("🏆 Victoire de "+p1name.textContent+" !");
+  setStatus("🏆 Victory for "+p1name.textContent+" !");
 }
 function p2win(){
   positionp2=80;
@@ -901,14 +912,17 @@ function p2win(){
   tune.pause();audio_victory.play();iback.style.opacity=1;
   ip2.src="p2win.gif";ip1.src="p1sad.png";
   boxP2.style.borderColor="gold";boxP2.style.boxShadow="0 0 16px gold";
-  splashWinTxt.textContent=p2name.textContent+" remporte la victoire !";
+  splashWinTxt.textContent=p2name.textContent+" wins!";
   queueSplash(splashWin,9999);
-  setStatus("🏆 Victoire de "+p2name.textContent+" !");
+  setStatus("🏆 Victory for "+p2name.textContent+" !");
 }
-function xch(){
-  setStatus("😵‍💫 Échange !");audio_warp.play();queueSplash(splashSwap,1600);
+function xch(onDone){
+  setStatus("Positions swapped!");audio_warp.play();
   var t=positionp1;positionp1=positionp2;positionp2=t;
-  snapToken(1);snapToken(2);state();
+  queueSplash(splashSwap,1600,function(){
+    snapToken(1);snapToken(2);state();
+    if(onDone)onDone();
+  });
 }
 
 // ══════════════════════════════════════
@@ -918,14 +932,14 @@ function dbgTeleport(p){
   var val=parseInt(document.getElementById("dbgP"+p+"pos").value)||0;
   val=Math.max(0,Math.min(80,val));
   if(p===1){positionp1=val;snapToken(1);}else{positionp2=val;snapToken(2);}
-  setStatus("🔧 J"+p+" téléporté → case "+val);state();updateShop();
+  setStatus("🔧 P"+p+" teleported → square "+val);state();updateShop();
 }
 function dbgForceDice(){
   var val=parseInt(document.getElementById("dbgDice").value)||1;
   val=Math.max(1,Math.min(20,val));
   forcedDice=val;
-  document.getElementById("dbgDiceStatus").textContent="Prochain dé forcé : "+val;
-  setStatus("🔧 Prochain dé = "+val);
+  document.getElementById("dbgDiceStatus").textContent="Next dice forced: "+val;
+  setStatus("🔧 Forced dice = "+val);
 }
 function dbgEffect(type){
   var p=parseInt(document.getElementById("dbgEffectPlayer").value)||1;
@@ -934,16 +948,16 @@ function dbgEffect(type){
   switch(type){
     case"death": if(p===1)deadp1();else deadp2(); break;
     case"bonus": if(p===1)doublep1();else doublep2(); break;
-    case"swap":  xch();endFn(); break;
+    case"swap":  xch(endFn); break;
     case"portal":
       portalUsedThisTurn=false;
       var np=p===1?(positionp1<40?orange_pos:blue_pos):(positionp2<40?orange_pos:blue_pos);
       if(p===1)positionp1=np;else positionp2=np;
       snapToken(p);queueSplash(splashPortal,1600);audio_portal.play();
-      setStatus("🔧 Portail forcé");setTimeout(endFn,2000);break;
+      setStatus("🔧 Portal forced");setTimeout(endFn,2000);break;
     case"bomb":
       var rb2=Math.floor(Math.random()*6)+1;
-      splashBombTxt.textContent="Test: recule de "+rb2;
+      splashBombTxt.textContent="Test: goes back "+rb2;
       queueSplash(splashBomb,1800);audio_bomb.play();
       setTimeout(function(){
         var prev=p===1?positionp1:positionp2;
@@ -953,7 +967,7 @@ function dbgEffect(type){
     case"gift":  if(p===1)p1_d10=true;else p2_d10=true;queueSplash(splashGift,1800);setTimeout(function(){state();endFn();},2000);break;
     case"trap":
       var tr2=Math.floor(Math.random()*6)+1;
-      splashTrapTxt.textContent="Test: recule de "+tr2;
+      splashTrapTxt.textContent="Test: goes back "+tr2;
       queueSplash(splashTrap,1800);audio_trap.play();
       setTimeout(function(){
         var foe=p===1?2:1,prev2=foe===1?positionp1:positionp2;
@@ -972,21 +986,21 @@ function dbgEffect(type){
 function dbgAddMoney(p,amt){
   if(p===1){money1+=amt;gold1.textContent=money1+" 💰";}
   else{money2+=amt;gold2.textContent=money2+" 💰";}
-  updateShop();setStatus("🔧 +"+amt+"💰 pour J"+p);
+  updateShop();setStatus("🔧 +"+amt+"💰 for P"+p);
 }
 function dbgUpdateTileMap(){
   var el=document.getElementById("dbgTileMap");
   if(!el)return;
   el.innerHTML=
-    "💀 Mort : COOR_DEATH["+pos_death+"] = "+COOR_DEATH[pos_death]+"<br>"+
-    "🔵 Portail bleu : COOR["+blue_pos+"] = "+COOR[blue_pos]+"<br>"+
-    "🟠 Portail orange : COOR["+orange_pos+"] = "+COOR[orange_pos]+"<br>"+
-    "🟡 Bonus ×5 : "+[posb1,posb2,posb3,posb4,posb5].map(function(p){return COOR[p];}).join(", ")+"<br>"+
-    "💣 Bombe1 : "+(posBomb1>=0?COOR[posBomb1]:"consommée")+"<br>"+
-    "💣 Bombe2 : "+(posBomb2>=0?COOR[posBomb2]:"consommée")+"<br>"+
-    "🎁 Cadeau : "+(posGift>=0?COOR[posGift]:"consommé")+"<br>"+
-    "🚀 Missile : "+(posTrap>=0?COOR[posTrap]:"consommé")+"<br>"+
-    "🌀 Vortex : "+(posVortex>=0?COOR[posVortex]:"consommé");
+    "💀 Death : COOR_DEATH["+pos_death+"] = "+COOR_DEATH[pos_death]+"<br>"+
+    "🔵 Blue portal : COOR["+blue_pos+"] = "+COOR[blue_pos]+"<br>"+
+    "🟠 Orange portal : COOR["+orange_pos+"] = "+COOR[orange_pos]+"<br>"+
+    "🟡 Bonus ×5: "+[posb1,posb2,posb3,posb4,posb5].map(function(p){return COOR[p];}).join(", ")+"<br>"+
+    "💣 Bomb1 : "+(posBomb1>=0?COOR[posBomb1]:"used")+"<br>"+
+    "💣 Bomb2 : "+(posBomb2>=0?COOR[posBomb2]:"used")+"<br>"+
+    "🎁 Gift : "+(posGift>=0?COOR[posGift]:"used")+"<br>"+
+    "🚀 Missile : "+(posTrap>=0?COOR[posTrap]:"used")+"<br>"+
+    "🌀 Vortex : "+(posVortex>=0?COOR[posVortex]:"used");
 }
 // Refresh tile map when debug modal opens
 document.getElementById("dbgBtn").addEventListener("click",dbgUpdateTileMap);
